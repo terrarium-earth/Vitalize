@@ -1,5 +1,5 @@
 loom {
-    accessWidenerPath = file("src/main/resources/spiritualize.accesswidener")
+    accessWidenerPath = file("src/main/resources/fluctlight.accesswidener")
 }
 
 dependencies {
@@ -8,6 +8,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "me.codexadrian.spirit:spirit-common-1.19.2:${rootProject.spirit_version}"
     modImplementation "com.teamresourceful.resourcefullib:resourcefullib-common-$rootProject.resourcefullib_version"
+    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19:3.1.15'
 }
 
 publishing {

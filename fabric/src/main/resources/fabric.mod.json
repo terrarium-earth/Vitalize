@@ -1,11 +1,13 @@
 {
   "schemaVersion": 1,
-  "id": "spiritualize",
+  "id": "fluctlight",
   "version": "${version}",
-  "name": "Spiritualize",
+  "name": "Fluctlight",
   "description": "Digitally simulate the summoning and killing of mobs!",
   "authors": [
-    "CodexAdrian"
+    "CodexAdrian",
+    "ThatGravyBoat",
+    "Kekie6"
   ],
   "contact": {
     "website": "https://www.curseforge.com/minecraft/mc-mods/spiritualize",
@@ -17,10 +19,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "earth.terrarium.spiritualize.SpiritualizeFabric"
+      "earth.terrarium.fluctlight.FluctlightFabric"
+    ],
+    "client": [
+      "earth.terrarium.fluctlight.FluctlightFabricClient"
     ]
   },
-  "accessWidener": "spiritualize.accesswidener",
+  "accessWidener": "fluctlight.accesswidener",
   "depends": {
     "fabricloader": ">=0.14.9",
     "minecraft": ">=1.19.2"
