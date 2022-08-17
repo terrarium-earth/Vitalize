@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "spiritualize",
+  "version": "${version}",
+  "name": "Spiritualize",
+  "description": "Digitally simulate the summoning and killing of mobs!",
+  "authors": [
+    "CodexAdrian"
+  ],
+  "contact": {
+    "website": "https://www.curseforge.com/minecraft/mc-mods/spiritualize",
+    "repo": "https://github.com/terrarium-earth/Spiritualize",
+    "issues": "https://github.com/terrarium-earth/Spiritualize/issues"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "earth.terrarium.spiritualize.SpiritualizeFabric"
+    ]
+  },
+  "accessWidener": "spiritualize.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "minecraft": ">=1.19.2"
+  }
+}

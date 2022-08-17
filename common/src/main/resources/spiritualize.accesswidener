@@ -1,0 +1,4 @@
+accessWidener v2 named
+extendable method net/minecraft/world/level/storage/loot/LootContext <init> (Lnet/minecraft/util/RandomSource;FLnet/minecraft/server/level/ServerLevel;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Ljava/util/Map;)V
+accessible field net/minecraft/world/level/storage/loot/predicates/LootItemRandomChanceWithLootingCondition percent F
+accessible field net/minecraft/world/level/storage/loot/predicates/LootItemRandomChanceWithLootingCondition lootingMultiplier F
