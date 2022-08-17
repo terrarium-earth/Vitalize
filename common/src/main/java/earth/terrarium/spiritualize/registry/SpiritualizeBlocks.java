@@ -5,6 +5,7 @@ import earth.terrarium.spiritualize.blocks.BasePylonBlock;
 import earth.terrarium.spiritualize.blocks.BasePylonBlockEntity;
 import earth.terrarium.spiritualize.blocks.SpiritualizationCoreBlock;
 import earth.terrarium.spiritualize.blocks.SpiritualizationCoreBlockEntity;
+import earth.terrarium.spiritualize.util.extensions.ExtensionDeclaration;
 import me.codexadrian.spirit.Spirit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -51,16 +53,19 @@ public class SpiritualizeBlocks {
         return tempBlock;
     }
 
+    @ExtensionDeclaration
     public static <T extends Block> Supplier<T> registerBlock(String id, Supplier<T> item) {
-        throw new AssertionError();
+        throw new NotImplementedException("Block Registration ain't implemented");
     }
 
+    @ExtensionDeclaration
     public static <E extends BlockEntity, T extends BlockEntityType<E>> Supplier<T> registerBlockEntity(String id, Supplier<T> item) {
-        throw new AssertionError();
+        throw new NotImplementedException("Block Entity Registration ain't implemented");
     }
 
+    @ExtensionDeclaration
     public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(BlockEntityFactory<E> factory, Block... blocks) {
-        throw new AssertionError();
+        throw new NotImplementedException("Block Entity Creation ain't implemented");
     }
 
     public static void register() {

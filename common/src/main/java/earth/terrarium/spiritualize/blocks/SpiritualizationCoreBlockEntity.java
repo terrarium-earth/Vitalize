@@ -4,6 +4,7 @@ import earth.terrarium.spiritualize.api.AbstractEnergy;
 import earth.terrarium.spiritualize.api.PylonType;
 import earth.terrarium.spiritualize.api.SpiritualizeLootContext;
 import earth.terrarium.spiritualize.registry.SpiritualizeBlocks;
+import earth.terrarium.spiritualize.util.extensions.ExtensionDeclaration;
 import earth.terrarium.spiritualize.util.extensions.ExtensionImplementation;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.codexadrian.spirit.data.Tier;
@@ -50,6 +51,11 @@ public class SpiritualizationCoreBlockEntity extends BlockEntity implements Abst
 
     public SpiritualizationCoreBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(SpiritualizeBlocks.SPIRITUALIZATION_CORE_ENTITY.get(), blockPos, blockState);
+        this.setEnergy(this);
+    }
+
+    @ExtensionDeclaration
+    public void setEnergy(AbstractEnergy energy) {
     }
 
     @Override
@@ -171,14 +177,14 @@ public class SpiritualizationCoreBlockEntity extends BlockEntity implements Abst
 
     @Override
     public long insertEnergy(long maxAmount) {
-        long moved = Math.min(maxAmount, this.energyLevel - maxAmount);
+        long moved = Math.min(Math.max(0, maxAmount), this.getMaxCapacity() - this.energyLevel);
         this.energyLevel += moved;
         return moved;
     }
 
     @Override
     public long extractEnergy(long maxAmount) {
-        long moved = Math.min(maxAmount, this.energyLevel);
+        long moved = Math.min(Math.max(0, maxAmount), this.energyLevel);
         this.energyLevel -= moved;
         return moved;
     }

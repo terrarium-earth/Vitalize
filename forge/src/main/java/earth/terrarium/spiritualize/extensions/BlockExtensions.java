@@ -1,6 +1,7 @@
 package earth.terrarium.spiritualize.extensions;
 
 import earth.terrarium.spiritualize.Spiritualize;
+import earth.terrarium.spiritualize.SpiritualizeForge;
 import earth.terrarium.spiritualize.registry.SpiritualizeBlocks;
 import earth.terrarium.spiritualize.util.extensions.ExtensionFor;
 import earth.terrarium.spiritualize.util.extensions.ExtensionImplementation;
@@ -14,17 +15,15 @@ import java.util.function.Supplier;
 
 @ExtensionFor(SpiritualizeBlocks.class)
 public class BlockExtensions {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Spiritualize.MOD_ID);
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Spiritualize.MOD_ID);
 
     @ExtensionImplementation
     public static <T extends Block> Supplier<T> registerBlock(String id, Supplier<T> item) {
-        return BLOCKS.register(id, item);
+        return SpiritualizeForge.BLOCKS.register(id, item);
     }
 
     @ExtensionImplementation
     public static <E extends BlockEntity, T extends BlockEntityType<E>> Supplier<T> registerBlockEntity(String id, Supplier<T> item) {
-        return BLOCK_ENTITIES.register(id, item);
+        return SpiritualizeForge.BLOCK_ENTITIES.register(id, item);
     }
 
     @ExtensionImplementation
