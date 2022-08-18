@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "vitalize:block/pylon_base"
+    }
+  }
+}

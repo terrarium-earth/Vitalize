@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "fluctlight",
+  "id": "vitalize",
   "version": "${version}",
-  "name": "Fluctlight",
+  "name": "Vitalize",
   "description": "Digitally simulate the summoning and killing of mobs!",
   "authors": [
     "CodexAdrian",
@@ -19,13 +19,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "earth.terrarium.fluctlight.FluctlightFabric"
+      "earth.terrarium.vitalize.VitalizeFabric"
     ],
     "client": [
-      "earth.terrarium.fluctlight.FluctlightFabricClient"
+      "earth.terrarium.vitalize.VitalizeFabricClient"
     ]
   },
-  "accessWidener": "fluctlight.accesswidener",
+  "accessWidener": "vitalize.accesswidener",
   "depends": {
     "fabricloader": ">=0.14.9",
     "minecraft": ">=1.19.2"

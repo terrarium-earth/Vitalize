@@ -36,7 +36,7 @@ subprojects {
         }
 
         tasks.withType(PostProcessClasses) {
-            annotationType.convention("earth.terrarium.fluctlight.util.extensions.ExtensionFor")
+            annotationType.convention("earth.terrarium.vitalize.util.extensions.ExtensionFor")
             classesDirectory.convention(tasks.compileJava.destinationDirectory)
             destinationDirectory.convention(sourceSets.main.java.destinationDirectory)
         }

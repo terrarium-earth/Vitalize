@@ -1,0 +1,23 @@
+{
+  "item.vitalize.experience_cubed": "§aXP³",
+  "block.vitalize.pylon_base": "Pylon",
+  "block.vitalize.pylon_": "Pylon",
+  "block.vitalize.soul_revitalizer": "Soul Revitalizer",
+  "block.vitalize.pylon_speed": "Speed Pylon",
+  "block.vitalize.pylon_recursive": "Recursive Pylon",
+  "block.vitalize.pylon_looting": "Looting Pylon",
+  "block.vitalize.pylon_experience": "Experience Pylon",
+  "block.vitalize.pylon_flame": "Flame Pylon",
+  "block.vitalize.pylon_efficiency": "Efficiency Pylon",
+  "block.vitalize.pylon_beheading": "Beheading Pylon",
+  "gui.vitalize.energy_tooltip": "⚡: %s ⚡ / %s ⚡",
+  "gui.vitalize.work_tooltip": "⌚: %s t / %s t",
+  "gui.vitalize.summoning": "§6☠§r %s",
+  "gui.vitalize.tier": "§6♦§r Tier %s",
+  "gui.vitalize.consuming": "§6⚡§r %s ⚡/t",
+  "gui.vitalize.spawn_count": "§6\uD83D\uDDE1§r %s mobs",
+  "gui.vitalize.work_time": "§6⌚§r %s seconds",
+  "gui.vitalize.missing_pylons": "§4⚠§r Missing Pylons",
+  "gui.vitalize.missing_inventory": "§4⚠§r Missing Storage",
+  "gui.vitalize.missing_energy": "§4⚠§r Needs Energy"
+}

@@ -14,7 +14,7 @@ loom {
 
 tasks.register("processJavaClasses", PostProcessClasses) {
     extensionPackages.addAll(
-            "earth.terrarium.fluctlight.extensions",
+            "earth.terrarium.vitalize.extensions",
     )
 
     dependsOn(tasks.compileJava)
