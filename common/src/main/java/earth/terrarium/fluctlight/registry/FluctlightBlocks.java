@@ -5,6 +5,8 @@ import earth.terrarium.fluctlight.blocks.BasePylonBlock;
 import earth.terrarium.fluctlight.blocks.BasePylonBlockEntity;
 import earth.terrarium.fluctlight.blocks.SoulTranslatorBlock;
 import earth.terrarium.fluctlight.blocks.SoulTranslatorBlockEntity;
+import earth.terrarium.fluctlight.item.PylonItem;
+import earth.terrarium.fluctlight.item.SoulTranslatorItem;
 import earth.terrarium.fluctlight.util.extensions.ExtensionDeclaration;
 import me.codexadrian.spirit.Spirit;
 import net.minecraft.core.BlockPos;
@@ -43,16 +45,18 @@ public class FluctlightBlocks {
             PYLON_BLOCK_FLAME.get(),
             PYLON_BLOCK_RECURSION.get()
     ));
-    public static final Supplier<Block> SOUL_TRANSLATOR = registerBlockWithItem("soul_translator", () -> new SoulTranslatorBlock(BlockBehaviour.Properties.of(Material.HEAVY_METAL).noOcclusion()));
+    public static final Supplier<Block> SOUL_TRANSLATOR = registerSoulTranslator("soul_translator", () -> new SoulTranslatorBlock(BlockBehaviour.Properties.of(Material.HEAVY_METAL).noOcclusion()));
     public static final Supplier<BlockEntityType<SoulTranslatorBlockEntity>> SOUL_TRANSLATOR_ENTITY = registerBlockEntity("soul_translator", () -> createBlockEntityType(SoulTranslatorBlockEntity::new, SOUL_TRANSLATOR.get()));
 
     public static Supplier<BasePylonBlock> registerPylon(DefaultPylonType type) {
-        return registerBlockWithItem(type.name, () -> new BasePylonBlock(type, BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).noOcclusion()));
+        Supplier<BasePylonBlock> block = registerBlock(type.name, () -> new BasePylonBlock(type, BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).noOcclusion()));
+        FluctlightItems.register(type.name, () -> new PylonItem(block.get(), new Item.Properties().tab(Spirit.SPIRIT)));
+        return block;
     }
 
-    public static <T extends Block> Supplier<T> registerBlockWithItem(String id, Supplier<T> block) {
+    public static <T extends Block> Supplier<T> registerSoulTranslator(String id, Supplier<T> block) {
         var tempBlock = registerBlock(id, block);
-        FluctlightItems.register(id, () -> new BlockItem(tempBlock.get(), new Item.Properties().tab(Spirit.SPIRIT)));
+        FluctlightItems.register(id, () -> new SoulTranslatorItem(tempBlock.get(), new Item.Properties().tab(Spirit.SPIRIT)));
         return tempBlock;
     }
 

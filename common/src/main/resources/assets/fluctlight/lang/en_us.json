@@ -1,4 +1,14 @@
 {
   "item.fluctlight.experience_cubed": "§aXP³",
-  "gui.fluctlight.soul_translator": "Soul Translator"
+  "gui.fluctlight.soul_translator": "Soul Translator",
+  "gui.fluctlight.energy_tooltip": "⚡: %s ⚡ / %s ⚡",
+  "gui.fluctlight.work_tooltip": "⌚: %s t / %s t",
+  "gui.fluctlight.summoning": "§6☠§r %s",
+  "gui.fluctlight.tier": "§6♦§r Tier %s",
+  "gui.fluctlight.consuming": "§6⚡§r %s ⚡/t",
+  "gui.fluctlight.spawn_count": "§6\uD83D\uDDE1§r %s mobs",
+  "gui.fluctlight.work_time": "§6⌚§r %s seconds",
+  "gui.fluctlight.missing_pylons": "§4⚠§r Missing Pylons",
+  "gui.fluctlight.missing_inventory": "§4⚠§r Missing Storage",
+  "gui.fluctlight.missing_energy": "§4⚠§r Needs Energy"
 }

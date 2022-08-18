@@ -28,6 +28,6 @@ public class MenuExtensions {
 
     @ExtensionImplementation
     public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
-        NetworkHooks.openScreen(player, provider);
+        NetworkHooks.openScreen(player, provider, (data) -> provider.writeExtraData(player, data));
     }
 }

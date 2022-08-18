@@ -1,5 +1,6 @@
 package earth.terrarium.fluctlight.blocks;
 
+import earth.terrarium.fluctlight.registry.FluctlightBlocks;
 import earth.terrarium.fluctlight.registry.FluctlightMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +14,8 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -23,9 +26,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class SoulTranslatorBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE = Shapes.or(
-            Block.box(2, 0, 2, 14, 2, 14),
-            Block.box(4, 2, 4, 12, 6, 12),
-            Block.box(2, 6, 2, 14, 6, 14)
+            Block.box(2, 0, 2, 14, 3, 14),
+            Block.box(4, 3, 4, 12, 7, 12),
+            Block.box(2, 7, 2, 14, 10, 14)
     );
 
     public SoulTranslatorBlock(Properties properties) {
@@ -57,5 +60,11 @@ public class SoulTranslatorBlock extends BaseEntityBlock {
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         return SHAPE;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return createTickerHelper(blockEntityType, FluctlightBlocks.SOUL_TRANSLATOR_ENTITY.get(), SoulTranslatorBlockEntity::tick);
     }
 }

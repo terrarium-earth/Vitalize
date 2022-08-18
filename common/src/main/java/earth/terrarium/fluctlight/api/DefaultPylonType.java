@@ -42,11 +42,6 @@ public enum DefaultPylonType implements PylonType {
     },
     LOOTING(3, 1.25) {
         @Override
-        public void onStart(SoulTranslatorBlockEntity core) {
-            core.setMaxEnergy((int) Math.max(1, core.getMaxEnergy() * 1.2F));
-        }
-
-        @Override
         public FluctlightLootContext modifyLootContext(FluctlightLootContext context) {
             context.incrementLootingAmount();
             return super.modifyLootContext(context);
@@ -64,10 +59,10 @@ public enum DefaultPylonType implements PylonType {
         @Override
         public void onStart(SoulTranslatorBlockEntity core) {
             core.setMaxTickTime((int) Math.max(1, core.getMaxTickTime() * 0.85F));
+            super.onStart(core);
         }
     },
-    EFFICIENCY(5, 0.85) {
-    },
+    EFFICIENCY(5, 0.85),
     NONE(8, 1);
 
     private final int maxLevel;

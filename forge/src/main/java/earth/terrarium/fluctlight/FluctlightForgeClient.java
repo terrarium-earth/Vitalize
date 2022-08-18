@@ -4,15 +4,18 @@ import earth.terrarium.fluctlight.client.SoulTranslatorScreen;
 import earth.terrarium.fluctlight.registry.FluctlightBlocks;
 import earth.terrarium.fluctlight.registry.FluctlightMenus;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-
+@Mod.EventBusSubscriber(modid = Fluctlight.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class FluctlightForgeClient {
 
-    public static void init() {
-        FMLJavaModLoadingContext.get().getModEventBus().register(FluctlightForgeClient.class);
+    @SubscribeEvent
+    public static void init(FMLClientSetupEvent event) {
         MenuScreens.register(FluctlightMenus.SOUL_TRANSLATOR_MENU.get(), SoulTranslatorScreen::new);
     }
 

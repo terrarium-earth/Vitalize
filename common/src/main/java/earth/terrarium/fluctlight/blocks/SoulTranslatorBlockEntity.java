@@ -1,6 +1,7 @@
 package earth.terrarium.fluctlight.blocks;
 
 import earth.terrarium.fluctlight.api.AbstractEnergy;
+import earth.terrarium.fluctlight.api.LootTableUtils;
 import earth.terrarium.fluctlight.api.PylonType;
 import earth.terrarium.fluctlight.api.FluctlightLootContext;
 import earth.terrarium.fluctlight.registry.ExtraDataMenuProvider;
@@ -16,6 +17,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,9 +31,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.compress.utils.Lists;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -39,15 +46,15 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEnergy, WorldlyContainer, IAnimatable, ContainerData, ExtraDataMenuProvider {
-    private EntityType<?> entityType;
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-    private List<BasePylonBlock> pylons;
+    private final List<BasePylonBlock> pylons = new ArrayList<>();
     private int maxTickTime;
     private int tickTime;
     private int maxEnergy;
@@ -56,6 +63,7 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
     public static final int MAX_TICK_TIME = 1;
     public static final int ENERGY = 2;
     public static final int MAX_ENERGY = 3;
+    public static final int ENERGY_CONSUMPTION = 4;
 
     private final AnimationFactory factory = new AnimationFactory(this);
 
@@ -103,6 +111,12 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
         return compoundTag;
     }
 
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
     public FluctlightLootContext modifyContext(FluctlightLootContext context) {
         checkAndRun(pylons, pylon -> pylon.modifyLootContext(context));
         return context;
@@ -113,20 +127,90 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
         return itemStacks;
     }
 
-    public void tick() {
-        if (maxTickTime <= 0 && !getCrystal().isEmpty() && validatePylons()) {
-            maxTickTime = getDefaultTickTime(); //TODO get from crystal
-            maxEnergy = getDefaultEnergyCost(); //TODO get from pylons
-            checkAndRun(pylons, pylon -> pylon.onStart(this));
-        } else if (maxTickTime > 0) {
-            if (tickTime < maxTickTime) {
-                tickTime++;
-            } else {
-                tickTime = 0;
-                maxTickTime = 0;
-                checkAndRun(pylons, pylon -> pylon.onEnd(this));
+    public static void tick(Level level, BlockPos blockPos, BlockState blockState, SoulTranslatorBlockEntity blockEntity) {
+        if (!level.isClientSide()) {
+            if (blockEntity.maxTickTime <= 0 && blockEntity.validate()) {
+                if (blockEntity.getEntityType() == null) return;
+                blockEntity.maxTickTime = blockEntity.getDefaultTickTime();
+                blockEntity.maxEnergy = blockEntity.getDefaultEnergyCost();
+                checkAndRun(blockEntity.pylons, pylon -> pylon.onStart(blockEntity));
+                blockEntity.setChanged();
+                level.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL);
+            } else if (blockEntity.getMaxTickTime() > 0) {
+                if (level.getGameTime() % 5 == 0 || blockEntity.getEnergyLevel() < blockEntity.getEnergyCost()) {
+                    if (blockEntity.getEntityType() == null || !blockEntity.validate() || blockEntity.getEnergyLevel() < blockEntity.getEnergyCost())  {
+                        blockEntity.clear();
+                        return;
+                    }
+                }
+                if (blockEntity.getEntityType() != null) {
+                    if (blockEntity.tickTime < blockEntity.getMaxTickTime()) {
+                        blockEntity.tickTime++;
+                        blockEntity.extractEnergy(blockEntity.getEnergyCost());
+                    } else {
+                        blockEntity.clear();
+                        if (blockEntity.validate()) {
+                            checkAndRun(blockEntity.pylons, pylon -> pylon.onEnd(blockEntity));
+                            Tier tier = SoulUtils.getTier(blockEntity.getCrystal(), level);
+                            if(tier != null) {
+                                ObjectArrayList<ItemStack> lootTable = LootTableUtils.getLootTable(blockEntity, (ServerLevel) level, tier.spawnCount());
+                                Direction containerDir = findNearestContainer(level, blockPos);
+                                if (containerDir != null) {
+                                    handleItemInsertion(level, level.getBlockEntity(blockPos.relative(containerDir)), containerDir.getOpposite(), lootTable);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+
+    public boolean validate() {
+        return this.validatePylons() && validateInventories();
+    }
+
+    public boolean validateInventories() {
+        if(this.getLevel() == null) return false;
+        Direction containerDir = findNearestContainer(getLevel(), this.getBlockPos());
+        return containerDir != null && hasSpace(getLevel().getBlockEntity(this.getBlockPos().relative(containerDir)), containerDir.getOpposite());
+    }
+
+    public void clear() {
+        if(this.getLevel() == null) return;
+        this.tickTime = 0;
+        this.maxTickTime = 0;
+        this.setChanged();
+        getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public static Direction findNearestContainer(Level level, BlockPos blockPos) {
+        for (Direction direction : Direction.values()) {
+            BlockPos offsetPos = blockPos.relative(direction);
+            BlockEntity blockEntity = level.getBlockEntity(offsetPos);
+            if (blockEntity != null) {
+                if (isContainer(blockEntity, direction.getOpposite()) && hasSpace(blockEntity, direction.getOpposite())) {
+                    return direction;
+                }
+            }
+        }
+        return null;
+    }
+
+    @ExtensionDeclaration
+    public static boolean isContainer(BlockEntity blockEntity, Direction direction) {
+        throw new AssertionError();
+    }
+
+    @ExtensionDeclaration
+    @Contract(pure = true)
+    public static boolean hasSpace(BlockEntity blockEntity, Direction direction) {
+        throw new AssertionError();
+    }
+
+    @ExtensionDeclaration
+    public static void handleItemInsertion(Level level, BlockEntity containerPos, Direction direction, ObjectArrayList<ItemStack> items) {
+        throw new AssertionError();
     }
 
     public static void checkAndRun(List<BasePylonBlock> pylons, Consumer<PylonType> consumer) {
@@ -139,10 +223,17 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
     }
 
     public boolean validatePylons() {
+        this.pylons.clear();
         if(this.getLevel() != null) {
             for (BlockPos pylonPosition : PYLON_POSITIONS) {
                 BlockPos offset = this.getBlockPos().offset(pylonPosition);
-                if(!(this.getLevel().getBlockState(offset).getBlock() instanceof BasePylonBlock)) return false;
+                Block block = this.getLevel().getBlockState(offset).getBlock();
+                if(!(block instanceof BasePylonBlock)) {
+                    pylons.clear();
+                    return false;
+                } else {
+                    pylons.add((BasePylonBlock) block);
+                }
             }
             return true;
         }
@@ -166,7 +257,13 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
     }
 
     public EntityType<?> getEntityType() {
-        return entityType;
+        if(!getCrystal().isEmpty()) {
+            String soulCrystalType = SoulUtils.getSoulCrystalType(this.getCrystal());
+            if (soulCrystalType != null) {
+                return EntityType.byString(soulCrystalType).orElse(null);
+            }
+        }
+        return null;
     }
 
     public ItemStack getCrystal() {
@@ -177,7 +274,7 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
         if(this.getLevel() != null) {
             Tier tier = SoulUtils.getTier(getCrystal(), this.getLevel());
             if(tier != null) {
-                return getLevel().getRandom().nextInt(tier.minSpawnDelay(), tier.maxSpawnDelay());
+                return tier.minSpawnDelay() + tier.maxSpawnDelay();
             }
         }
         return 0;
@@ -258,7 +355,7 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
     }
 
     @Override
-    public void setItem(int i, ItemStack itemStack) {
+    public void setItem(int i, @NotNull ItemStack itemStack) {
         this.inventory.set(i, itemStack);
     }
 
@@ -274,19 +371,24 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "spin_cycle", 5, event -> {
-            if (this.tickTime > 0) {
+        animationData.addAnimationController(new AnimationController<>(this, "spin_cycle", 0, event -> {
+            if (this.maxTickTime > 0) {
                 event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.soul_translator.spin", true));
                 return PlayState.CONTINUE;
+            } else {
+                event.getController().setAnimation(new AnimationBuilder());
+                return PlayState.CONTINUE;
             }
-            event.getController().markNeedsReload();
-            return PlayState.STOP;
         }));
     }
 
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
+    }
+
+    public int getEnergyCost() {
+        return this.getMaxTickTime() == 0 ? 0 : this.getMaxEnergy() / this.getMaxTickTime();
     }
 
     @Override
@@ -296,27 +398,24 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
             case MAX_TICK_TIME -> this.maxTickTime;
             case ENERGY -> (int) this.energyLevel;
             case MAX_ENERGY -> (int) this.getMaxCapacity();
+            case ENERGY_CONSUMPTION -> this.getEnergyCost();
             default -> 0;
         };
     }
 
     @Override
     public void set(int i, int j) {
-        switch (i) {
-            case TICK_TIME -> this.tickTime = j;
-            case MAX_TICK_TIME -> this.maxTickTime = j;
-            case ENERGY -> this.energyLevel = j;
-        }
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 
     @Override
     public void writeExtraData(ServerPlayer player, FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(this.getBlockPos());
+        buffer.writeBoolean(!this.validatePylons());
+        buffer.writeBoolean(!this.validateInventories());
     }
 
     @Override
@@ -326,7 +425,7 @@ public class SoulTranslatorBlockEntity extends BlockEntity implements AbstractEn
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        return new SoulTranslatorMenu(this, this, i, inventory, this.getBlockPos());
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+        return new SoulTranslatorMenu(this, this, i, inventory, !this.validatePylons(), !this.validateInventories());
     }
 }

@@ -19,7 +19,9 @@ public interface PylonType {
         return lootTable;
     }
 
-    default void onStart(SoulTranslatorBlockEntity core) {}
+    default void onStart(SoulTranslatorBlockEntity core) {
+        core.setMaxEnergy((int) Math.max(1, core.getMaxEnergy() * energyModifier()));
+    }
 
     default void onEnd(SoulTranslatorBlockEntity core) {}
 

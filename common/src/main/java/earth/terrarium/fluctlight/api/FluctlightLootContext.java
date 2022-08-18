@@ -11,6 +11,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +26,7 @@ public class FluctlightLootContext extends LootContext {
     protected FluctlightLootContext(ServerLevel serverLevel, BlockPos blockPos, LivingEntity entity) {
         super(serverLevel.getRandom(), 0, serverLevel, serverLevel.getServer().getLootTables()::get, serverLevel.getServer().getPredicateManager()::get, Map.of(), Map.of());
         this.entity = entity;
-        this.parameters = Map.of(LootContextParams.DAMAGE_SOURCE, DamageSource.OUT_OF_WORLD, LootContextParams.ORIGIN, blockPos, LootContextParams.THIS_ENTITY, entity);
+        this.parameters = Map.of(LootContextParams.DAMAGE_SOURCE, DamageSource.OUT_OF_WORLD, LootContextParams.ORIGIN, Vec3.atCenterOf(blockPos), LootContextParams.THIS_ENTITY, entity);
     }
 
     public static FluctlightLootContext of(ServerLevel serverLevel, SoulTranslatorBlockEntity spirtulizationCore) {
