@@ -1,0 +1,5 @@
+{
+  "type": "vitalize:beheading_drops",
+  "entity": "minecraft:creeper",
+  "head": "minecraft:creeper_head"
+}

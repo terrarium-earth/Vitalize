@@ -22,8 +22,7 @@ public class SoulRevitalizerMenu extends AbstractContainerMenu {
         this.data = data;
         this.missingPylons = missingPylons;
         this.missingInventory = missingInventory;
-        this.addSlot(new Slot(this.container, 0, 83, 83));
-        this.addSlot(new Slot(this.container, 1, 184, 83));
+        this.addSlot(new Slot(this.container, 0, 184, 83));
         addPlayerInvSlots(inventory);
         addDataSlots(data);
     }

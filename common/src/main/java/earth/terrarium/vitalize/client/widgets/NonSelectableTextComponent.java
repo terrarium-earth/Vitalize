@@ -9,11 +9,17 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class NonSelectableTextComponent extends ListEntry {
-    private final Component data;
+    private final Supplier<Component> data;
+
+    public NonSelectableTextComponent(Supplier<Component> data) {
+        this.data = data;
+    }
 
     public NonSelectableTextComponent(Component data) {
-        this.data = data;
+        this.data = () -> data;
     }
 
     @Override
@@ -22,7 +28,7 @@ public class NonSelectableTextComponent extends ListEntry {
         stack.pushPose();
         stack.translate(left, top, 0);
         stack.scale(0.85F, 0.85F, 1);
-        GuiComponent.drawString(stack, font, this.data, 0, 1, 0xff6efffa);
+        GuiComponent.drawString(stack, font, this.data.get(), 0, 1, 0xff6efffa);
         stack.popPose();
     }
 }

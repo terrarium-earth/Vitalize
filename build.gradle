@@ -1,9 +1,9 @@
-import net.msrandom.postprocess.PostProcessClasses
+import net.msrandom.postprocess.MixinClasses
 
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
-    id "jvm-post-processing" version "0.1" apply false
+    id "jvm-post-processing" version "0.5.3" apply false
 }
 
 architectury {
@@ -27,18 +27,24 @@ subprojects {
     }
 
     if (name != "common") {
-        sourceSets.main {
-            java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
+        tasks.register("mixinJavaClasses", MixinClasses) {
+            configs.from(file("src/main/resources/${project.name}.mixins.json"))
+            classpath.from(tasks.compileJava.classpath)
+            classesDirectory.set(tasks.compileJava.destinationDirectory)
+            destinationDirectory.set(sourceSets.main.java.destinationDirectory)
         }
 
         tasks.compileJava {
             destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
         }
 
-        tasks.withType(PostProcessClasses) {
-            annotationType.convention("earth.terrarium.vitalize.util.extensions.ExtensionFor")
-            classesDirectory.convention(tasks.compileJava.destinationDirectory)
-            destinationDirectory.convention(sourceSets.main.java.destinationDirectory)
+        sourceSets.main {
+            java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
+            compiledBy(tasks.mixinJavaClasses)
+        }
+
+        tasks.processResources {
+            exclude("${project.name}.mixins.json")
         }
     }
 }

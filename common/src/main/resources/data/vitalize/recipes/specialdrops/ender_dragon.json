@@ -1,0 +1,5 @@
+{
+  "type": "vitalize:special_drops",
+  "entity": "minecraft:ender_dragon",
+  "drop": "vitalize:entity/ender_dragon"
+}

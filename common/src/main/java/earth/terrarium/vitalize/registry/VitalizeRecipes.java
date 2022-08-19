@@ -3,7 +3,6 @@ package earth.terrarium.vitalize.registry;
 import com.teamresourceful.resourcefullib.common.recipe.CodecRecipeSerializer;
 import earth.terrarium.vitalize.recipes.BeheadingData;
 import earth.terrarium.vitalize.recipes.SpecialDropsData;
-import earth.terrarium.vitalize.util.extensions.ExtensionDeclaration;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -30,12 +29,10 @@ public class VitalizeRecipes {
     public static final Supplier<RecipeSerializer<BeheadingData>> BEHEADING_DATA_SERIALIZER = registerRecipeSerializer("beheading_drops", () -> new CodecRecipeSerializer<>(BEHEADING_DATA.get(), BeheadingData::codec));
     public static final Supplier<RecipeSerializer<SpecialDropsData>> SPECIAL_DROPS_SERIALIZER = registerRecipeSerializer("special_drops", () -> new CodecRecipeSerializer<>(SPECIAL_DROPS.get(), SpecialDropsData::codec));
 
-    @ExtensionDeclaration
     public static <R extends Recipe<?>, T extends RecipeType<R>> Supplier<T> registerRecipeType(String name, Supplier<T> recipe) {
         throw new NotImplementedException("Recipe Type Registration ain't implemented");
     }
 
-    @ExtensionDeclaration
     public static <R extends Recipe<?>, T extends RecipeSerializer<R>> Supplier<T> registerRecipeSerializer(String name, Supplier<T> recipe) {
         throw new NotImplementedException("Recipe Serializer Registration ain't implemented");
     }

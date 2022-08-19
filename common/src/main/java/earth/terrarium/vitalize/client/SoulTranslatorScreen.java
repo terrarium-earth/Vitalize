@@ -6,6 +6,7 @@ import com.mojang.math.Vector3f;
 import com.teamresourceful.resourcefullib.client.components.selection.SelectionList;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.vitalize.Vitalize;
+import earth.terrarium.vitalize.api.EntityRarity;
 import earth.terrarium.vitalize.blocks.SoulRevitalizerBlockEntity;
 import earth.terrarium.vitalize.blocks.SoulRevitalizerMenu;
 import earth.terrarium.vitalize.client.widgets.NonSelectableTextComponent;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SoulTranslatorScreen extends AbstractContainerScreen<SoulRevitalizerMenu> {
@@ -62,7 +64,7 @@ public class SoulTranslatorScreen extends AbstractContainerScreen<SoulRevitalize
     @Override
     protected void init() {
         super.init();
-        boxComponents = addRenderableWidget(new SelectionList(leftPos + 86, topPos + 20, 77, 56, 10, entry -> {}));
+        boxComponents = addRenderableWidget(new SelectionList(leftPos + 86, topPos + 20, 77, 80, 10, entry -> {}));
         boxComponents.updateEntries(baseComponents());
     }
 
@@ -179,14 +181,18 @@ public class SoulTranslatorScreen extends AbstractContainerScreen<SoulRevitalize
         return this.tier;
     }
 
-    private List<Component> getComponentsFromTier(Tier tier) {
-        List<Component> components = new ArrayList<>();
+    private List<Supplier<Component>> getComponentsFromTier(Tier tier) {
+        List<Supplier<Component>> components = new ArrayList<>();
         if(tier != null) {
-            getOrCreateEntity().ifPresent(entity -> components.add(Component.translatable("gui." + Vitalize.MODID + ".summoning", entity.getType().getDescription(), tier.displayName())));
-            getOrCreateEntity().ifPresent(entity -> components.add(Component.translatable("gui." + Vitalize.MODID + ".tier", Component.translatable(tier.displayName()))));
-            components.add(Component.translatable("gui." + Vitalize.MODID + ".consuming", this.getEnergyConsumption()));
-            components.add(Component.translatable("gui." + Vitalize.MODID + ".work_time", getMaxTicks() / 20));
-            components.add(Component.translatable("gui." + Vitalize.MODID + ".spawn_count", tier.spawnCount()));
+            getOrCreateEntity().ifPresent(entity -> components.add(() -> Component.translatable("gui." + Vitalize.MODID + ".summoning", entity.getType().getDescription(), tier.displayName())));
+            getOrCreateEntity().ifPresent(entity -> {
+                EntityRarity rarity = EntityRarity.getRarity(entity.getType());
+                components.add(() -> Component.translatable("gui." + Vitalize.MODID + ".rarity", rarity.getTranslation().copy().withStyle(ChatFormatting.AQUA)).withStyle(rarity.color));
+            });
+            getOrCreateEntity().ifPresent(entity -> components.add(() -> Component.translatable("gui." + Vitalize.MODID + ".tier", Component.translatable(tier.displayName()))));
+            components.add(() -> Component.translatable("gui." + Vitalize.MODID + ".consuming", this.getEnergyConsumption()));
+            components.add(() -> Component.translatable("gui." + Vitalize.MODID + ".work_time", getMaxTicks() / 20));
+            components.add(() -> Component.translatable("gui." + Vitalize.MODID + ".spawn_count", tier.spawnCount()));
         }
         return components;
     }

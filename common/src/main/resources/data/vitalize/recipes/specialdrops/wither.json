@@ -1,0 +1,5 @@
+{
+  "type": "vitalize:special_drops",
+  "entity": "minecraft:wither",
+  "drop": "vitalize:entity/wither"
+}

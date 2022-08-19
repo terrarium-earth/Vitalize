@@ -28,6 +28,7 @@
   "accessWidener": "vitalize.accesswidener",
   "depends": {
     "fabricloader": ">=0.14.9",
-    "minecraft": ">=1.19.2"
+    "minecraft": ">=1.19.2",
+    "spirit": ">=2.1.9"
   }
 }

@@ -1,7 +1,6 @@
 package earth.terrarium.vitalize.registry;
 
 import earth.terrarium.vitalize.blocks.SoulRevitalizerMenu;
-import earth.terrarium.vitalize.util.extensions.ExtensionDeclaration;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,17 +18,14 @@ public class VitalizeMenus {
 
     }
 
-    @ExtensionDeclaration
     public static <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenu(String name, Supplier<MenuType<T>> menu) {
         throw new NotImplementedException();
     }
 
-    @ExtensionDeclaration
     public static <T extends AbstractContainerMenu> MenuType<T> createMenuType(MenuFactory<T> factory) {
         throw new NotImplementedException();
     }
 
-    @ExtensionDeclaration
     public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
         throw new NotImplementedException();
     }

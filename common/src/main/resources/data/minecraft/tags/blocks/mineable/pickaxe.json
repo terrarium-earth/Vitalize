@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "vitalize:pylon_base",
+    "vitalize:pylon_beheading",
+    "vitalize:pylon_efficiency",
+    "vitalize:pylon_experience",
+    "vitalize:pylon_flame",
+    "vitalize:pylon_looting",
+    "vitalize:pylon_recursive",
+    "vitalize:pylon_speed",
+    "vitalize:soul_revitalizer"
+  ]
+}

@@ -56,11 +56,17 @@ versionRange = "[43,)" #mandatory
 ordering = "NONE"
 # Side this dependency is applied on - BOTH, CLIENT or SERVER
 side = "BOTH"
-# Here's another dependency
+
 [[dependencies.vitalize]]
 modId = "minecraft"
 mandatory = true
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
 versionRange = "[1.19.2,1.20)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.vitalize]]
+modId = "spirit"
+mandatory = true
+versionRange = "[2.1.9,)"
 ordering = "NONE"
 side = "BOTH"

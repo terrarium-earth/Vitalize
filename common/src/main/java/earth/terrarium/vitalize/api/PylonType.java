@@ -2,10 +2,13 @@ package earth.terrarium.vitalize.api;
 
 import earth.terrarium.vitalize.blocks.SoulRevitalizerBlockEntity;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public interface PylonType {
 
@@ -28,4 +31,6 @@ public interface PylonType {
     int maxLevel();
 
     double energyModifier();
+
+    List<Component> description();
 }

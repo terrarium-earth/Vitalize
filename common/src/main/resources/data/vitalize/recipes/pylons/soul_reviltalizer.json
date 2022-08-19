@@ -1,0 +1,31 @@
+{
+  "type": "spirit:soul_engulfing",
+  "input": {
+    "ingredient": {
+      "item": "spirit:soul_cage"
+    },
+    "multiblock": {
+      "pattern": [
+        [
+          " S ",
+          "S@S",
+          " S "
+        ],
+        [
+          "SAS",
+          "A&A",
+          "SAS"
+        ]
+      ],
+      "keys": {
+        "S": {
+          "block": "spirit:soul_steel_block"
+        },
+        "A": {
+          "block": "spirit:soul_slate"
+        }
+      }
+    }
+  },
+  "outputItem": "vitalize:soul_revitalizer"
+}

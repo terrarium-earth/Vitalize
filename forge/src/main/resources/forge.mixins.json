@@ -1,0 +1,15 @@
+{
+  "package": "earth.terrarium.vitalize.mixins",
+  "minVersion": "0.8",
+  "mixins": [
+    "BlockExtensions",
+    "CoreBlockEntityExtensions",
+    "EnergyExtensions",
+    "ItemExtensions",
+    "LootContextExtensions",
+    "MenuExtensions",
+    "PylonItemExtensions",
+    "RecipeExtensions",
+    "SoulTranslatorItemExtensions"
+  ]
+}

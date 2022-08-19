@@ -1,0 +1,5 @@
+{
+  "type": "vitalize:beheading_drops",
+  "entity": "minecraft:zombie",
+  "head": "minecraft:zombie_head"
+}

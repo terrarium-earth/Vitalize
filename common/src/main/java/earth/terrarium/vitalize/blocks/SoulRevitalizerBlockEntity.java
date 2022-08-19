@@ -1,13 +1,8 @@
 package earth.terrarium.vitalize.blocks;
 
-import earth.terrarium.vitalize.Vitalize;
-import earth.terrarium.vitalize.api.AbstractEnergy;
-import earth.terrarium.vitalize.api.LootTableUtils;
-import earth.terrarium.vitalize.api.PylonType;
-import earth.terrarium.vitalize.api.ModifiedLootContext;
+import earth.terrarium.vitalize.api.*;
 import earth.terrarium.vitalize.registry.ExtraDataMenuProvider;
 import earth.terrarium.vitalize.registry.VitalizeBlocks;
-import earth.terrarium.vitalize.util.extensions.ExtensionDeclaration;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.codexadrian.spirit.data.Tier;
 import me.codexadrian.spirit.utils.SoulUtils;
@@ -15,6 +10,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -36,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +51,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractEnergy, WorldlyContainer, IAnimatable, ContainerData, ExtraDataMenuProvider {
-    private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     private final List<BasePylonBlock> pylons = new ArrayList<>();
     private int maxTickTime;
     private int tickTime;
@@ -82,11 +79,6 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
 
     public SoulRevitalizerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(VitalizeBlocks.SOUL_TRANSLATOR_ENTITY.get(), blockPos, blockState);
-        this.setEnergy(this);
-    }
-
-    @ExtensionDeclaration
-    public void setEnergy(AbstractEnergy energy) {
     }
 
     @Override
@@ -129,9 +121,10 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, SoulRevitalizerBlockEntity blockEntity) {
-        if (!level.isClientSide()) {
+        if (level instanceof ServerLevel serverLevel) {
             if (blockEntity.maxTickTime <= 0 && blockEntity.validate()) {
                 if (blockEntity.getEntityType() == null) return;
+                if (blockEntity.energyLevel < blockEntity.getDefaultEnergyCost()) return;
                 blockEntity.maxTickTime = blockEntity.getDefaultTickTime();
                 blockEntity.maxEnergy = blockEntity.getDefaultEnergyCost();
                 checkAndRun(blockEntity.pylons, pylon -> pylon.onStart(blockEntity));
@@ -139,7 +132,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
                 level.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL);
             } else if (blockEntity.getMaxTickTime() > 0) {
                 if (level.getGameTime() % 5 == 0 || blockEntity.getEnergyLevel() < blockEntity.getEnergyCost()) {
-                    if (blockEntity.getEntityType() == null || !blockEntity.validate() || blockEntity.getEnergyLevel() < blockEntity.getEnergyCost())  {
+                    if (blockEntity.getEntityType() == null || !blockEntity.validate() || blockEntity.getEnergyLevel() < blockEntity.getEnergyCost()) {
                         blockEntity.clear();
                         return;
                     }
@@ -148,13 +141,18 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
                     if (blockEntity.tickTime < blockEntity.getMaxTickTime()) {
                         blockEntity.tickTime++;
                         blockEntity.extractEnergy(blockEntity.getEnergyCost());
+                        if (level.getGameTime() % 5 == 0) {
+                            serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, blockPos.above().getX() + 0.5, blockPos.above().getY() + 0.3, blockPos.above().getZ() + 0.5, 2, 0.01, 0.01, 0.01, 0.01);
+                            serverLevel.sendParticles(ParticleTypes.SOUL, blockPos.above().getX() + 0.5, blockPos.above().getY() + 0.3, blockPos.above().getZ() + 0.5, 2, 0.01, 0.01, 0.01, 0.01);
+                            blockEntity.summonParticles(serverLevel);
+                        }
                     } else {
                         blockEntity.clear();
                         if (blockEntity.validate()) {
                             checkAndRun(blockEntity.pylons, pylon -> pylon.onEnd(blockEntity));
                             Tier tier = SoulUtils.getTier(blockEntity.getCrystal(), level);
-                            if(tier != null) {
-                                ObjectArrayList<ItemStack> lootTable = LootTableUtils.getLootTable(blockEntity, (ServerLevel) level, tier.spawnCount());
+                            if (tier != null) {
+                                ObjectArrayList<ItemStack> lootTable = LootTableUtils.getLootTable(blockEntity, serverLevel, tier.spawnCount());
                                 Direction containerDir = findNearestContainer(level, blockPos);
                                 if (containerDir != null) {
                                     handleItemInsertion(level, level.getBlockEntity(blockPos.relative(containerDir)), containerDir.getOpposite(), lootTable);
@@ -163,7 +161,23 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
                         }
                     }
                 }
+            } else if (!blockEntity.validatePylons() && serverLevel.getGameTime() % 5 == 0) {
+                for (BlockPos pos : PYLON_POSITIONS) {
+                    BlockPos offset = blockPos.offset(pos);
+                    if (!(serverLevel.getBlockState(offset).getBlock() instanceof BasePylonBlock)) {
+                        serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, 10, 0.01, 0.01, 0.01, 0.01);
+                    }
+                }
             }
+        }
+    }
+
+    public void summonParticles(ServerLevel serverLevel) {
+        for (BlockPos pos : PYLON_POSITIONS) {
+            float progress = 1 - this.tickTime / (float) this.getMaxTickTime();
+            Vec3 offset = Vec3.atCenterOf(this.getBlockPos()).add(pos.getX() * progress, 0.75, pos.getZ() * progress);
+            serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, offset.x(), offset.y(), offset.z(), 2, 0.01, 0.01, 0.01, 0.01);
+            serverLevel.sendParticles(ParticleTypes.SOUL, offset.x(), offset.y(), offset.z(), 2, 0.01, 0.01, 0.01, 0.01);
         }
     }
 
@@ -172,13 +186,13 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     }
 
     public boolean validateInventories() {
-        if(this.getLevel() == null) return false;
+        if (this.getLevel() == null) return false;
         Direction containerDir = findNearestContainer(getLevel(), this.getBlockPos());
         return containerDir != null && hasSpace(getLevel().getBlockEntity(this.getBlockPos().relative(containerDir)), containerDir.getOpposite());
     }
 
     public void clear() {
-        if(this.getLevel() == null) return;
+        if (this.getLevel() == null) return;
         this.tickTime = 0;
         this.maxTickTime = 0;
         this.setChanged();
@@ -198,18 +212,15 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
         return null;
     }
 
-    @ExtensionDeclaration
     public static boolean isContainer(BlockEntity blockEntity, Direction direction) {
         throw new AssertionError();
     }
 
-    @ExtensionDeclaration
     @Contract(pure = true)
     public static boolean hasSpace(BlockEntity blockEntity, Direction direction) {
         throw new AssertionError();
     }
 
-    @ExtensionDeclaration
     public static void handleItemInsertion(Level level, BlockEntity containerPos, Direction direction, ObjectArrayList<ItemStack> items) {
         throw new AssertionError();
     }
@@ -225,11 +236,11 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
 
     public boolean validatePylons() {
         this.pylons.clear();
-        if(this.getLevel() != null) {
+        if (this.getLevel() != null) {
             for (BlockPos pylonPosition : PYLON_POSITIONS) {
                 BlockPos offset = this.getBlockPos().offset(pylonPosition);
                 Block block = this.getLevel().getBlockState(offset).getBlock();
-                if(!(block instanceof BasePylonBlock)) {
+                if (!(block instanceof BasePylonBlock)) {
                     pylons.clear();
                     return false;
                 } else {
@@ -258,7 +269,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     }
 
     public EntityType<?> getEntityType() {
-        if(!getCrystal().isEmpty()) {
+        if (!getCrystal().isEmpty()) {
             String soulCrystalType = SoulUtils.getSoulCrystalType(this.getCrystal());
             if (soulCrystalType != null) {
                 return EntityType.byString(soulCrystalType).orElse(null);
@@ -272,9 +283,9 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     }
 
     public int getDefaultTickTime() {
-        if(this.getLevel() != null) {
+        if (this.getLevel() != null) {
             Tier tier = SoulUtils.getTier(getCrystal(), this.getLevel());
-            if(tier != null) {
+            if (tier != null) {
                 return tier.minSpawnDelay() + tier.maxSpawnDelay();
             }
         }
@@ -282,10 +293,10 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     }
 
     public int getDefaultEnergyCost() {
-        if(this.getLevel() != null) {
+        if (this.getLevel() != null) {
             Tier tier = SoulUtils.getTier(getCrystal(), this.getLevel());
-            if(tier != null) {
-                return 2 * tier.spawnRange() * tier.spawnCount() * this.getMaxTickTime();
+            if (tier != null) {
+                return (int) (EntityRarity.getRarity(getEntityType()).energyModifer * tier.spawnRange() * tier.spawnCount() * this.getMaxTickTime());
             }
         }
         return 0;
@@ -332,7 +343,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
 
     @Override
     public int getContainerSize() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -373,13 +384,8 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     @Override
     public void registerControllers(AnimationData animationData) {
         animationData.addAnimationController(new AnimationController<>(this, "spin_cycle", 0, event -> {
-            if (event.getAnimatable().maxTickTime > 0) {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.soul_translator.spin", true));
-                return PlayState.CONTINUE;
-            } else {
-                event.getController().setAnimation(new AnimationBuilder());
-                return PlayState.CONTINUE;
-            }
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.soul_translator.spin", true));
+            return PlayState.CONTINUE;
         }));
     }
 

@@ -1,0 +1,34 @@
+{
+  "type": "spirit:soul_engulfing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:enchanted_golden_apple"
+    },
+    "multiblock": {
+      "pattern": [
+        [
+          " X ",
+          "X@X",
+          " X "
+        ],
+        [
+          "SAS",
+          "A&A",
+          "SAS"
+        ]
+      ],
+      "keys": {
+        "A": {
+          "block": "spirit:soul_steel_block"
+        },
+        "S": {
+          "block": "spirit:soul_slate"
+        },
+        "X": {
+          "block": "spirit:soul_glass"
+        }
+      }
+    }
+  },
+  "outputItem": "vitalize:pylon_recursive"
+}

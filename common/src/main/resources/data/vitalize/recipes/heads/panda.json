@@ -1,0 +1,10 @@
+{
+  "type": "vitalize:beheading_drops",
+  "entity": "minecraft:panda",
+  "head": {
+    "id": "minecraft:player_head",
+    "nbt": {
+      "SkullOwner": "CodexAdrian"
+    }
+  }
+}

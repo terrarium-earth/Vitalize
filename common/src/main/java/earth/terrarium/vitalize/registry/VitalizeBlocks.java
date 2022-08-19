@@ -7,11 +7,12 @@ import earth.terrarium.vitalize.blocks.SoulRevitalizerBlock;
 import earth.terrarium.vitalize.blocks.SoulRevitalizerBlockEntity;
 import earth.terrarium.vitalize.item.PylonItem;
 import earth.terrarium.vitalize.item.SoulRevitalizerItem;
-import earth.terrarium.vitalize.util.extensions.ExtensionDeclaration;
 import me.codexadrian.spirit.Spirit;
+import me.codexadrian.spirit.registry.SpiritBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -44,11 +45,11 @@ public class VitalizeBlocks {
             PYLON_BLOCK_FLAME.get(),
             PYLON_BLOCK_RECURSION.get()
     ));
-    public static final Supplier<Block> SOUL_TRANSLATOR = registerSoulTranslator("soul_revitalizer", () -> new SoulRevitalizerBlock(BlockBehaviour.Properties.of(Material.HEAVY_METAL).noOcclusion()));
+    public static final Supplier<Block> SOUL_TRANSLATOR = registerSoulTranslator("soul_revitalizer", () -> new SoulRevitalizerBlock(BlockBehaviour.Properties.copy(SpiritBlocks.SOUL_SLATE.get()).noOcclusion()));
     public static final Supplier<BlockEntityType<SoulRevitalizerBlockEntity>> SOUL_TRANSLATOR_ENTITY = registerBlockEntity("soul_translator", () -> createBlockEntityType(SoulRevitalizerBlockEntity::new, SOUL_TRANSLATOR.get()));
 
     public static Supplier<BasePylonBlock> registerPylon(DefaultPylonType type) {
-        Supplier<BasePylonBlock> block = registerBlock(type.name, () -> new BasePylonBlock(type, BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).noOcclusion()));
+        Supplier<BasePylonBlock> block = registerBlock(type.name, () -> new BasePylonBlock(type, BlockBehaviour.Properties.copy(SpiritBlocks.SOUL_SLATE.get()).noOcclusion()));
         VitalizeItems.register(type.name, () -> new PylonItem(block.get(), new Item.Properties().tab(Spirit.SPIRIT)));
         return block;
     }
@@ -59,17 +60,14 @@ public class VitalizeBlocks {
         return tempBlock;
     }
 
-    @ExtensionDeclaration
     public static <T extends Block> Supplier<T> registerBlock(String id, Supplier<T> item) {
         throw new NotImplementedException("Block Registration ain't implemented");
     }
 
-    @ExtensionDeclaration
     public static <E extends BlockEntity, T extends BlockEntityType<E>> Supplier<T> registerBlockEntity(String id, Supplier<T> item) {
         throw new NotImplementedException("Block Entity Registration ain't implemented");
     }
 
-    @ExtensionDeclaration
     public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(BlockEntityFactory<E> factory, Block... blocks) {
         throw new NotImplementedException("Block Entity Creation ain't implemented");
     }
