@@ -41,6 +41,6 @@ public record BeheadingData(ResourceLocation id, EntityType<?> entity, ItemStack
     }
 
     public static ItemStack getHead(ServerLevel level, EntityType<?> entity) {
-        return level.getRecipeManager().getAllRecipesFor(VitalizeRecipes.BEHEADING_DATA.get()).stream().filter(recipe -> recipe.entity() == entity).findFirst().map(BeheadingData::head).orElse(ItemStack.EMPTY);
+        return level.getRecipeManager().getAllRecipesFor(VitalizeRecipes.BEHEADING_DATA.get()).stream().filter(recipe -> recipe.entity() == entity).findFirst().map(BeheadingData::head).map(ItemStack::copy).orElse(ItemStack.EMPTY);
     }
 }

@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "vitalize:pylon_looting"
+          "name": "vitalize:pylon_efficiency"
         }
       ],
       "conditions": [

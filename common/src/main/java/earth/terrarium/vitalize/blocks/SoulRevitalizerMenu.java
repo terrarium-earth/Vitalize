@@ -1,9 +1,12 @@
 package earth.terrarium.vitalize.blocks;
 
+import earth.terrarium.vitalize.Vitalize;
 import earth.terrarium.vitalize.registry.VitalizeMenus;
+import me.codexadrian.spirit.utils.SoulUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -22,7 +25,18 @@ public class SoulRevitalizerMenu extends AbstractContainerMenu {
         this.data = data;
         this.missingPylons = missingPylons;
         this.missingInventory = missingInventory;
-        this.addSlot(new Slot(this.container, 0, 184, 83));
+        this.addSlot(new Slot(this.container, 0, 184, 83) {
+            @Override
+            public boolean mayPlace(@NotNull ItemStack itemStack) {
+                String entityTypeName = SoulUtils.getSoulCrystalType(itemStack);
+                if(entityTypeName != null) {
+                    if(SoulUtils.getTier(itemStack, inventory.player.getLevel()) != null) {
+                        return EntityType.byString(entityTypeName).map(entityType -> !entityType.is(Vitalize.BLACKLIST)).orElse(false);
+                    }
+                }
+                return false;
+            }
+        });
         addPlayerInvSlots(inventory);
         addDataSlots(data);
     }

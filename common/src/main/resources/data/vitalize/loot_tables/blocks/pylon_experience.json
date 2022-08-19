@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "vitalize:pylon_beheading"
+          "name": "vitalize:pylon_experience"
         }
       ],
       "conditions": [

@@ -16,6 +16,7 @@ public class Vitalize {
     public static final TagKey<EntityType<?>> RARE = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MODID, "rarity/rare"));
     public static final TagKey<EntityType<?>> EPIC = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MODID, "rarity/epic"));
     public static final TagKey<EntityType<?>> LEGENDARY = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MODID, "rarity/legendary"));
+    public static final TagKey<EntityType<?>> BLACKLIST = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MODID, "revitalizer_blacklist"));
 
     public static void init() {
         VitalizeBlocks.register();

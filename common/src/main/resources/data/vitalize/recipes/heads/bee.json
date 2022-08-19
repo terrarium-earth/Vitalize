@@ -1,0 +1,10 @@
+{
+  "type": "vitalize:beheading_drops",
+  "entity": "minecraft:bee",
+  "head": {
+    "id": "minecraft:player_head",
+    "nbt": {
+      "SkullOwner": "ThatGravyBoat"
+    }
+  }
+}

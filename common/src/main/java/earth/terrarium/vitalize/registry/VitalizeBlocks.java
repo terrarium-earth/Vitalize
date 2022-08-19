@@ -45,11 +45,11 @@ public class VitalizeBlocks {
             PYLON_BLOCK_FLAME.get(),
             PYLON_BLOCK_RECURSION.get()
     ));
-    public static final Supplier<Block> SOUL_TRANSLATOR = registerSoulTranslator("soul_revitalizer", () -> new SoulRevitalizerBlock(BlockBehaviour.Properties.copy(SpiritBlocks.SOUL_SLATE.get()).noOcclusion()));
+    public static final Supplier<Block> SOUL_TRANSLATOR = registerSoulTranslator("soul_revitalizer", () -> new SoulRevitalizerBlock(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE).noOcclusion()));
     public static final Supplier<BlockEntityType<SoulRevitalizerBlockEntity>> SOUL_TRANSLATOR_ENTITY = registerBlockEntity("soul_translator", () -> createBlockEntityType(SoulRevitalizerBlockEntity::new, SOUL_TRANSLATOR.get()));
 
     public static Supplier<BasePylonBlock> registerPylon(DefaultPylonType type) {
-        Supplier<BasePylonBlock> block = registerBlock(type.name, () -> new BasePylonBlock(type, BlockBehaviour.Properties.copy(SpiritBlocks.SOUL_SLATE.get()).noOcclusion()));
+        Supplier<BasePylonBlock> block = registerBlock(type.name, () -> new BasePylonBlock(type, BlockBehaviour.Properties.copy(Blocks.DEEPSLATE).noOcclusion()));
         VitalizeItems.register(type.name, () -> new PylonItem(block.get(), new Item.Properties().tab(Spirit.SPIRIT)));
         return block;
     }
