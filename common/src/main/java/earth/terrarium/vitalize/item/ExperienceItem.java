@@ -7,9 +7,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class CubedExperience extends Item {
-    public CubedExperience(Properties properties) {
+public class ExperienceItem extends Item {
+    private final int experienceReward;
+    public ExperienceItem(Properties properties, int experienceReward) {
         super(properties);
+        this.experienceReward = experienceReward;
     }
 
     @Override
@@ -18,12 +20,17 @@ public class CubedExperience extends Item {
         if (level.isClientSide()) {
             return InteractionResultHolder.success(itemInHand);
         } else if(player.isShiftKeyDown()) {
-            player.giveExperiencePoints(20 * itemInHand.getCount());
+            player.giveExperiencePoints(experienceReward * itemInHand.getCount());
             itemInHand.setCount(0);
             return InteractionResultHolder.consume(itemInHand);
         }
-        player.giveExperiencePoints(20);
+        player.giveExperiencePoints(experienceReward);
         itemInHand.shrink(1);
         return InteractionResultHolder.consume(itemInHand);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack itemStack) {
+        return true;
     }
 }

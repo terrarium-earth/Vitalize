@@ -94,7 +94,7 @@ public class SoulTranslatorScreen extends AbstractContainerScreen<SoulRevitalize
         RenderSystem.setShaderColor(1, 1, 1, 1f);
         blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         int energyBarHeight = Mth.clamp((int) (58F * (getEnergyLevel() / (float) getMaxEnergyLevel())), 0, 58);
-        blit(matrixStack, leftPos + 186, topPos + 19 + (58 - energyBarHeight), 208, 0, 12, energyBarHeight);
+        blit(matrixStack, leftPos + 186, topPos + 19 + (58 - energyBarHeight), 208, 58 - energyBarHeight, 12, energyBarHeight);
         int tickBarHeight = Mth.clamp((int) (58F * (getTicks() / (float) getMaxTicks())), 0, 58);
         blit(matrixStack, leftPos + 172, topPos + 19 + (58 - tickBarHeight), 220, 0, 6, tickBarHeight);
         this.getOrCreateEntity().ifPresent(entity -> {

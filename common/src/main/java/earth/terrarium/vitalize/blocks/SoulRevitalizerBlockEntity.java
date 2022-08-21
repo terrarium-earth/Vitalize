@@ -124,7 +124,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
         if (level instanceof ServerLevel serverLevel) {
             if (blockEntity.maxTickTime <= 0 && blockEntity.validate()) {
                 if (blockEntity.getEntityType() == null) return;
-                if (blockEntity.energyLevel < blockEntity.getDefaultEnergyCost()) return;
+                if (blockEntity.energyLevel <= blockEntity.getDefaultEnergyCost()) return;
                 blockEntity.maxTickTime = blockEntity.getDefaultTickTime();
                 blockEntity.maxEnergy = blockEntity.getDefaultEnergyCost();
                 checkAndRun(blockEntity.pylons, pylon -> pylon.onStart(blockEntity));
@@ -149,11 +149,11 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
                     } else {
                         blockEntity.clear();
                         if (blockEntity.validate()) {
-                            checkAndRun(blockEntity.pylons, pylon -> pylon.onEnd(blockEntity));
                             Tier tier = SoulUtils.getTier(blockEntity.getCrystal(), level);
                             if (tier != null) {
                                 ObjectArrayList<ItemStack> lootTable = LootTableUtils.getLootTable(blockEntity, serverLevel, tier.spawnCount());
                                 Direction containerDir = findNearestContainer(level, blockPos);
+                                checkAndRun(blockEntity.pylons, pylon -> pylon.onEnd(lootTable, blockEntity));
                                 if (containerDir != null) {
                                     handleItemInsertion(level, level.getBlockEntity(blockPos.relative(containerDir)), containerDir.getOpposite(), lootTable);
                                 }

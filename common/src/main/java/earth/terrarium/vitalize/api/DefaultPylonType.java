@@ -2,6 +2,7 @@ package earth.terrarium.vitalize.api;
 
 import earth.terrarium.vitalize.Vitalize;
 import earth.terrarium.vitalize.blocks.SoulRevitalizerBlockEntity;
+import earth.terrarium.vitalize.item.ExperienceItem;
 import earth.terrarium.vitalize.recipes.BeheadingData;
 import earth.terrarium.vitalize.registry.VitalizeItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -44,6 +45,16 @@ public enum DefaultPylonType implements PylonType {
         }
 
         @Override
+        public void onEnd(ObjectArrayList<ItemStack> drops, SoulRevitalizerBlockEntity core) {
+            for (int i = 0; i < drops.size(); i++) {
+                if(drops.get(i).getItem() instanceof ExperienceItem) {
+
+                }
+            }
+            super.onEnd(drops, core);
+        }
+
+        @Override
         public List<Component> description() {
             return List.of(
                     Component.translatable("block." + Vitalize.MODID + "." + this.name + ".info_one"),
@@ -81,7 +92,7 @@ public enum DefaultPylonType implements PylonType {
     },
     RECURSIVE(1, 1.5) {
         @Override
-        public void onEnd(SoulRevitalizerBlockEntity core) {
+        public void onEnd(ObjectArrayList<ItemStack> drops, SoulRevitalizerBlockEntity core) {
             if(core.getLevel() != null && core.getLevel().random.nextFloat() < 0.15) {
                 SoulUtils.deviateSoulCount(core.getCrystal(), 1, core.getLevel(), null);
             }

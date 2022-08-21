@@ -26,7 +26,7 @@ public interface PylonType {
         core.setMaxEnergy((int) Math.max(1, core.getMaxEnergy() * energyModifier()));
     }
 
-    default void onEnd(SoulRevitalizerBlockEntity core) {}
+    default void onEnd(ObjectArrayList<ItemStack> drops, SoulRevitalizerBlockEntity core) {}
 
     int maxLevel();
 
