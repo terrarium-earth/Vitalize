@@ -10,9 +10,9 @@
     "Kekie6"
   ],
   "contact": {
-    "website": "https://www.curseforge.com/minecraft/mc-mods/spiritualize",
-    "repo": "https://github.com/terrarium-earth/Spiritualize",
-    "issues": "https://github.com/terrarium-earth/Spiritualize/issues"
+    "website": "https://www.curseforge.com/minecraft/mc-mods/vitalize",
+    "repo": "https://github.com/terrarium-earth/Vitalize",
+    "issues": "https://github.com/terrarium-earth/Vitalize/issues"
   },
   "license": "All-Rights-Reserved",
   "icon": "icon.png",
@@ -29,6 +29,6 @@
   "depends": {
     "fabricloader": ">=0.14.9",
     "minecraft": ">=1.19.2",
-    "spirit": ">=2.1.9"
+    "spirit": ">=2.1.12"
   }
 }

@@ -9,7 +9,9 @@ import java.util.function.Supplier;
 
 public class VitalizeItems {
 
-    public static final Supplier<Item> EXPERIENCE_CUBED = register("experience_cubed", () -> new ExperienceItem(new Item.Properties().tab(Spirit.SPIRIT), 20));
+    public static final Supplier<Item> EXPERIENCE = register("experience", () -> new ExperienceItem(new Item.Properties().tab(Spirit.SPIRIT), 2));
+    public static final Supplier<Item> EXPERIENCE_SQUARED = register("experience_squared", () -> new ExperienceItem(new Item.Properties().tab(Spirit.SPIRIT), 4));
+    public static final Supplier<Item> EXPERIENCE_CUBED = register("experience_cubed", () -> new ExperienceItem(new Item.Properties().tab(Spirit.SPIRIT), 16));
 
     public static Supplier<Item> register(String id, Supplier<Item> item) {
         throw new NotImplementedException("Item Registration ain't implemented");

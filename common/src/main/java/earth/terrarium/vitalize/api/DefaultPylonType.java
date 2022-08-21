@@ -38,7 +38,7 @@ public enum DefaultPylonType implements PylonType {
         @Override
         public ObjectArrayList<ItemStack> modifyLootTable(ObjectArrayList<ItemStack> lootTable, ServerLevel serverLevel, EntityType<?> entity) {
             EntityRarity rarity = EntityRarity.getRarity(entity);
-            if(serverLevel.random.nextFloat() < 0.10) {
+            if(serverLevel.random.nextFloat() < 0.05) {
                 lootTable.add(new ItemStack(VitalizeItems.EXPERIENCE_CUBED.get(), rarity.experienceDrops < 2 ? 1 : serverLevel.random.nextInt(rarity.experienceDrops/2, rarity.experienceDrops)));
             }
             return lootTable;
@@ -47,8 +47,11 @@ public enum DefaultPylonType implements PylonType {
         @Override
         public void onEnd(ObjectArrayList<ItemStack> drops, SoulRevitalizerBlockEntity core) {
             for (int i = 0; i < drops.size(); i++) {
-                if(drops.get(i).getItem() instanceof ExperienceItem) {
-
+                ItemStack itemStack = drops.get(i);
+                if(itemStack.is(VitalizeItems.EXPERIENCE_SQUARED.get())) {
+                    drops.set(i, new ItemStack(VitalizeItems.EXPERIENCE_CUBED.get(), itemStack.getCount()));
+                } else if(itemStack.is(VitalizeItems.EXPERIENCE.get())) {
+                    drops.set(i, new ItemStack(VitalizeItems.EXPERIENCE_SQUARED.get(), itemStack.getCount()));
                 }
             }
             super.onEnd(drops, core);
@@ -58,7 +61,8 @@ public enum DefaultPylonType implements PylonType {
         public List<Component> description() {
             return List.of(
                     Component.translatable("block." + Vitalize.MODID + "." + this.name + ".info_one"),
-                    Component.translatable("block." + Vitalize.MODID + "." + this.name + ".info_two", 10)
+                    Component.translatable("block." + Vitalize.MODID + "." + this.name + ".info_two", 5),
+                    Component.translatable("block." + Vitalize.MODID + "." + this.name + ".info_three")
             );
         }
     },

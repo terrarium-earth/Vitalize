@@ -1,5 +1,7 @@
 {
   "item.vitalize.experience_cubed": "§aXP³",
+  "item.vitalize.experience_squared": "§aXP²",
+  "item.vitalize.experience": "§aXP¹",
   "block.vitalize.soul_revitalizer": "Soul Revitalizer",
   "block.vitalize.pylon_base": "Pylon",
   "block.vitalize.pylon_speed": "Speed Pylon",
@@ -13,7 +15,8 @@
   "block.vitalize.shift": "SHIFT",
   "block.vitalize.pylon_beheading.info": "§6☠§r %s%% Beheading Chance",
   "block.vitalize.pylon_experience.info_one": "§6♺§r +1 roll per pylon",
-  "block.vitalize.pylon_experience.info_two": "§6\uD83E\uDDEA§r %s%% chance per roll to give §aXP³",
+  "block.vitalize.pylon_experience.info_two": "§6\uD83E\uDDEA§r %s%% chance per roll to give §aXP",
+  "block.vitalize.pylon_experience.info_three": "§6⁺¹§r Grants §aXP⁺¹§r per pylon",
   "block.vitalize.pylon_flame.info": "§6\uD83D\uDD25§r Applies burning",
   "block.vitalize.pylon_looting.info": "§6\uD83D\uDDE1§r +1 Looting per pylon",
   "block.vitalize.pylon_recursive.info_one": "§6♺§r %s%% Chance to trigger",
