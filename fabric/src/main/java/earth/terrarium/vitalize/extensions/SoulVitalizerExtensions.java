@@ -1,4 +1,4 @@
-package earth.terrarium.vitalize.mixins;
+package earth.terrarium.vitalize.extensions;
 
 import earth.terrarium.vitalize.blocks.SoulRevitalizerBlockEntity;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -11,17 +11,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.msrandom.extensions.annotations.ClassExtension;
+import net.msrandom.extensions.annotations.ImplementsBaseElement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @SuppressWarnings("UnstableApiUsage")
-@Mixin(value = SoulRevitalizerBlockEntity.class, remap = false)
+@ClassExtension(SoulRevitalizerBlockEntity.class)
 public class SoulVitalizerExtensions {
-    /**
-     * @author CodexAdrian
-     * @reason because I said so
-     */
-    @Overwrite
+
+    @ImplementsBaseElement
     public static void handleItemInsertion(Level level, BlockEntity blockEntity, Direction direction, ObjectArrayList<ItemStack> items) {
         var storage = ItemStorage.SIDED.find(level, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, direction.getOpposite());
         for(ItemStack stack : items) {
@@ -36,20 +35,12 @@ public class SoulVitalizerExtensions {
         }
     }
 
-    /**
-     * @author CodexAdrian
-     * @reason because I said so
-     */
-    @Overwrite
+    @ImplementsBaseElement
     public static boolean isContainer(BlockEntity blockEntity, Direction direction) {
         return ItemStorage.SIDED.find(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, direction) != null;
     }
 
-    /**
-     * @author CodexAdrian
-     * @reason because I said so
-     */
-    @Overwrite
+    @ImplementsBaseElement
     public static boolean hasSpace(BlockEntity blockEntity, Direction direction) {
         Storage<ItemVariant> storageViews = ItemStorage.SIDED.find(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, direction);
         if(storageViews != null) {

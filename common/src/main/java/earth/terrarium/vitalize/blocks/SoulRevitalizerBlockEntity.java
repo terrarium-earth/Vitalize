@@ -1,7 +1,10 @@
 package earth.terrarium.vitalize.blocks;
 
+import earth.terrarium.botarium.api.energy.BlockEnergyContainer;
+import earth.terrarium.botarium.api.energy.EnergyContainer;
+import earth.terrarium.botarium.api.energy.EnergyHoldable;
+import earth.terrarium.botarium.api.menu.ExtraDataMenuProvider;
 import earth.terrarium.vitalize.api.*;
-import earth.terrarium.vitalize.registry.ExtraDataMenuProvider;
 import earth.terrarium.vitalize.registry.VitalizeBlocks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.codexadrian.spirit.data.Tier;
@@ -50,13 +53,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractEnergy, WorldlyContainer, IAnimatable, ContainerData, ExtraDataMenuProvider {
+public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyHoldable, WorldlyContainer, IAnimatable, ContainerData, ExtraDataMenuProvider {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     private final List<BasePylonBlock> pylons = new ArrayList<>();
+    private BlockEnergyContainer energyContainer;
     private int maxTickTime;
     private int tickTime;
     private int maxEnergy;
-    private long energyLevel;
     public static final int TICK_TIME = 0;
     public static final int MAX_TICK_TIME = 1;
     public static final int ENERGY = 2;
@@ -76,14 +79,13 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
         positions.add(new BlockPos(0, 0, -4));
     });
 
-
     public SoulRevitalizerBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(VitalizeBlocks.SOUL_TRANSLATOR_ENTITY.get(), blockPos, blockState);
+        super(VitalizeBlocks.SOUL_REVITALIZER_ENTITY.get(), blockPos, blockState);
     }
 
     @Override
     public void load(CompoundTag compoundTag) {
-        this.energyLevel = compoundTag.getLong("Energy");
+        super.load(compoundTag);
         this.tickTime = compoundTag.getInt("BurnTime");
         this.maxTickTime = compoundTag.getInt("MaxBurnTime");
         ContainerHelper.loadAllItems(compoundTag, inventory);
@@ -91,7 +93,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
 
     @Override
     protected void saveAdditional(CompoundTag compoundTag) {
-        compoundTag.putLong("Energy", this.energyLevel);
+        super.saveAdditional(compoundTag);
         compoundTag.putInt("BurnTime", tickTime);
         compoundTag.putInt("MaxBurnTime", maxTickTime);
         ContainerHelper.saveAllItems(compoundTag, inventory);
@@ -124,15 +126,15 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
         if (level instanceof ServerLevel serverLevel) {
             if (blockEntity.maxTickTime <= 0 && blockEntity.validate()) {
                 if (blockEntity.getEntityType() == null) return;
-                if (blockEntity.energyLevel <= blockEntity.getDefaultEnergyCost()) return;
+                if (blockEntity.getEnergyStorage().getStoredEnergy() <= blockEntity.getDefaultEnergyCost()) return;
                 blockEntity.maxTickTime = blockEntity.getDefaultTickTime();
                 blockEntity.maxEnergy = blockEntity.getDefaultEnergyCost();
                 checkAndRun(blockEntity.pylons, pylon -> pylon.onStart(blockEntity));
                 blockEntity.setChanged();
                 level.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL);
             } else if (blockEntity.getMaxTickTime() > 0) {
-                if (level.getGameTime() % 5 == 0 || blockEntity.getEnergyLevel() < blockEntity.getEnergyCost()) {
-                    if (blockEntity.getEntityType() == null || !blockEntity.validate() || blockEntity.getEnergyLevel() < blockEntity.getEnergyCost()) {
+                if (level.getGameTime() % 5 == 0 || blockEntity.getEnergyStorage().getStoredEnergy() < blockEntity.getEnergyCost()) {
+                    if (blockEntity.getEntityType() == null || !blockEntity.validate() || blockEntity.getEnergyStorage().getStoredEnergy() < blockEntity.getEnergyCost()) {
                         blockEntity.clear();
                         return;
                     }
@@ -140,7 +142,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
                 if (blockEntity.getEntityType() != null) {
                     if (blockEntity.tickTime < blockEntity.getMaxTickTime()) {
                         blockEntity.tickTime++;
-                        blockEntity.extractEnergy(blockEntity.getEnergyCost());
+                        blockEntity.getEnergyStorage().extractEnergy(blockEntity.getEnergyCost(), false);
                         if (level.getGameTime() % 5 == 0) {
                             serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, blockPos.above().getX() + 0.5, blockPos.above().getY() + 0.3, blockPos.above().getZ() + 0.5, 2, 0.01, 0.01, 0.01, 0.01);
                             serverLevel.sendParticles(ParticleTypes.SOUL, blockPos.above().getX() + 0.5, blockPos.above().getY() + 0.3, blockPos.above().getZ() + 0.5, 2, 0.01, 0.01, 0.01, 0.01);
@@ -303,30 +305,6 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     }
 
     @Override
-    public long insertEnergy(long maxAmount) {
-        long moved = Math.min(Math.max(0, maxAmount), this.getMaxCapacity() - this.energyLevel);
-        this.energyLevel += moved;
-        return moved;
-    }
-
-    @Override
-    public long extractEnergy(long maxAmount) {
-        long moved = Math.min(Math.max(0, maxAmount), this.energyLevel);
-        this.energyLevel -= moved;
-        return moved;
-    }
-
-    @Override
-    public long getEnergyLevel() {
-        return this.energyLevel;
-    }
-
-    @Override
-    public long getMaxCapacity() {
-        return 1000000;
-    }
-
-    @Override
     public int[] getSlotsForFace(@NotNull Direction direction) {
         return new int[0];
     }
@@ -403,8 +381,8 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
         return switch (i) {
             case TICK_TIME -> this.tickTime;
             case MAX_TICK_TIME -> this.maxTickTime;
-            case ENERGY -> (int) this.energyLevel;
-            case MAX_ENERGY -> (int) this.getMaxCapacity();
+            case ENERGY -> (int) this.getEnergyStorage().getStoredEnergy();
+            case MAX_ENERGY -> this.maxEnergy;
             case ENERGY_CONSUMPTION -> this.getEnergyCost();
             default -> 0;
         };
@@ -434,5 +412,13 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements AbstractE
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
         return new SoulRevitalizerMenu(this, this, i, inventory, !this.validatePylons(), !this.validateInventories());
+    }
+
+    @Override
+    public EnergyContainer getEnergyStorage() {
+        if(energyContainer == null) {
+            this.energyContainer = new BlockEnergyContainer(this, 1000000);
+        }
+        return energyContainer;
     }
 }

@@ -10,6 +10,10 @@ loom {
     }
 }
 
+classExtensions {
+    registerForSourceSet sourceSets.main, "earth.terrarium.vitalize.extensions"
+}
+
 sourceSets.main {
     def commonSourceSets = project(":common").sourceSets
 
@@ -27,14 +31,11 @@ sourceSets.main {
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
     include modApi("com.teamresourceful.resourcefullib:resourcefullib-forge-$rootProject.resourcefullib_version")
-    modImplementation "me.codexadrian.spirit:spirit-forge-1.19.2:${rootProject.spirit_version}"
+    include modImplementation("earth.terrarium:botarium-forge-${minecraft_version}:${botarium_version}")
+    modImplementation("me.codexadrian.spirit:spirit-forge-1.19.2:${rootProject.spirit_version}") {transitive = false}
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:${rootProject.rei_version}"
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
     modImplementation('software.bernie.geckolib:geckolib-forge-1.19:3.1.16')
-    modRuntimeOnly "mekanism:Mekanism:${mekanism_version}"// core
-    modRuntimeOnly "mekanism:Mekanism:${mekanism_version}:additions"// Mekanism: Addition
-    modRuntimeOnly "mekanism:Mekanism:${mekanism_version}:generators"// Mekanism: Generator
-    modRuntimeOnly "mekanism:Mekanism:${mekanism_version}:tools"// Mekanism: Tool
     compileOnly(project(path: ":common")) { transitive false }
     //shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
     //modImplementation "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"

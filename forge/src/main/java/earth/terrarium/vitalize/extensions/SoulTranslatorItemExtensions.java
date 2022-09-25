@@ -1,15 +1,16 @@
-package earth.terrarium.vitalize.mixins;
+package earth.terrarium.vitalize.extensions;
 
 import earth.terrarium.vitalize.ForgeSoulRevitalizerRenderer;
 import earth.terrarium.vitalize.item.SoulRevitalizerItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.msrandom.extensions.annotations.ClassExtension;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.function.Consumer;
 
-@Mixin(value = SoulRevitalizerItem.class, remap = false)
+@ClassExtension(SoulRevitalizerItem.class)
 public class SoulTranslatorItemExtensions extends BlockItem {
 
     public SoulTranslatorItemExtensions(Block arg, Properties arg2) {

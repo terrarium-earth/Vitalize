@@ -1,5 +1,5 @@
 {
-  "package": "earth.terrarium.vitalize.mixins",
+  "package": "earth.terrarium.vitalize.extensions",
   "minVersion": "0.8",
   "mixins": [
     "BlockExtensions",

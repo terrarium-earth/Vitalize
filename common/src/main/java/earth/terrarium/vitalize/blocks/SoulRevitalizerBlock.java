@@ -1,8 +1,7 @@
 package earth.terrarium.vitalize.blocks;
 
+import earth.terrarium.botarium.api.menu.MenuHooks;
 import earth.terrarium.vitalize.registry.VitalizeBlocks;
-import earth.terrarium.vitalize.registry.VitalizeMenus;
-import me.codexadrian.spirit.blocks.blockentity.SoulCageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -45,7 +44,7 @@ public class SoulRevitalizerBlock extends BaseEntityBlock {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else if (level.getBlockEntity(blockPos) instanceof SoulRevitalizerBlockEntity blockEntity) {
-            VitalizeMenus.openMenu((ServerPlayer) player, blockEntity);
+            MenuHooks.openMenu((ServerPlayer) player, blockEntity);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
@@ -70,15 +69,15 @@ public class SoulRevitalizerBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, VitalizeBlocks.SOUL_TRANSLATOR_ENTITY.get(), SoulRevitalizerBlockEntity::tick);
+        return createTickerHelper(blockEntityType, VitalizeBlocks.SOUL_REVITALIZER_ENTITY.get(), SoulRevitalizerBlockEntity::tick);
     }
 
     @Override
     public @NotNull List<ItemStack> getDrops(@NotNull BlockState blockState, LootContext.@NotNull Builder builder) {
         List<ItemStack> drops = super.getDrops(blockState, builder);
         BlockEntity blockE = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (blockE instanceof SoulCageBlockEntity) {
-            drops.add(((SoulCageBlockEntity) blockE).getItem(0));
+        if (blockE instanceof SoulRevitalizerBlockEntity entity) {
+            drops.add(entity.getItem(0));
         }
         return drops;
     }

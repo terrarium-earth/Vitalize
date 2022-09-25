@@ -6,6 +6,12 @@ loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
+def ENV = System.getenv()
+
+classExtensions {
+    registerForSourceSet sourceSets.main, "earth.terrarium.vitalize.extensions"
+}
+
 sourceSets.main {
     def commonSourceSets = project(":common").sourceSets
 
@@ -28,14 +34,10 @@ jar {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modImplementation "me.codexadrian.spirit:spirit-fabric-1.19.2:${rootProject.spirit_version}"
+    modImplementation("me.codexadrian.spirit:spirit-fabric-1.19.2:${rootProject.spirit_version}") {transitive = false}
     include modApi("com.teamresourceful.resourcefullib:resourcefullib-fabric-$rootProject.resourcefullib_version")
+    include modImplementation("earth.terrarium:botarium-fabric-${minecraft_version}:${botarium_version}")
     modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19:3.1.15'
-    modImplementation 'RebornCore:RebornCore-1.19:+'
-    modImplementation 'TechReborn:TechReborn-1.19:+'
-    include modApi('teamreborn:energy:2.2.0') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
     compileOnly(project(path: ":common")) { transitive false }
     //shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
     //modImplementation "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"

@@ -9,8 +9,10 @@ dependencies {
     modImplementation "me.codexadrian.spirit:spirit-common-1.19.2:${rootProject.spirit_version}"
     modImplementation "com.teamresourceful.resourcefullib:resourcefullib-common-$rootProject.resourcefullib_version"
     modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19:3.1.15'
+    modImplementation "earth.terrarium:botarium-common-${minecraft_version}:${botarium_version}"
     modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     modRuntimeOnly "mezz.jei:jei-${minecraft_version}-common:${jei_version}"
+    compileOnly "net.msrandom:class-extension-annotations:1.0"
 }
 
 publishing {

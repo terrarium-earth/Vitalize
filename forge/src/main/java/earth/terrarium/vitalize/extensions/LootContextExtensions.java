@@ -1,4 +1,4 @@
-package earth.terrarium.vitalize.mixins;
+package earth.terrarium.vitalize.extensions;
 
 import earth.terrarium.vitalize.api.ModifiedLootContext;
 import net.minecraft.resources.ResourceLocation;
@@ -8,12 +8,13 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.msrandom.extensions.annotations.ClassExtension;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Map;
 import java.util.function.Function;
 
-@Mixin(value = ModifiedLootContext.class, remap = false)
+@ClassExtension(ModifiedLootContext.class)
 public class LootContextExtensions extends LootContext {
     private int lootingAmount;
 

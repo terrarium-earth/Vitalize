@@ -1,6 +1,5 @@
-package earth.terrarium.vitalize.mixins;
+package earth.terrarium.vitalize.extensions;
 
-import earth.terrarium.vitalize.api.AbstractEnergy;
 import earth.terrarium.vitalize.blocks.SoulRevitalizerBlockEntity;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.codexadrian.spirit.registry.SpiritItems;
@@ -17,6 +16,8 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.msrandom.extensions.annotations.ClassExtension;
+import net.msrandom.extensions.annotations.ImplementsBaseElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,37 +26,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = SoulRevitalizerBlockEntity.class, remap = false)
-public abstract class CoreBlockEntityExtensions extends BlockEntity implements IEnergyStorage {
-    private LazyOptional<IEnergyStorage> energyOptional;
+@ClassExtension(SoulRevitalizerBlockEntity.class)
+public abstract class CoreBlockEntityExtensions {
 
-    public CoreBlockEntityExtensions(BlockEntityType<?> arg, BlockPos arg2, BlockState arg3) {
-        super(arg, arg2, arg3);
-    }
-
-    @Inject(method = "<init>", at = @At("TAIL"))
-    public void setMahEnergy(BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
-        this.energyOptional = LazyOptional.of(() -> this);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return cap.equals(CapabilityEnergy.ENERGY) ? energyOptional.cast() : super.getCapability(cap, side);
-    }
-
-    @Overwrite
+    @ImplementsBaseElement
     public static boolean isContainer(BlockEntity blockEntity, Direction direction) {
         return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).isPresent();
     }
 
-    @Overwrite
+    @ImplementsBaseElement
     public static boolean hasSpace(BlockEntity container, Direction direction) {
         return container.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction)
                 .map(iItemHandler -> ItemHandlerHelper.insertItemStacked(iItemHandler, SpiritItems.SOUL_CRYSTAL_SHARD.get().getDefaultInstance(), true).isEmpty())
                 .orElse(false);
     }
 
-    @Overwrite
+    @ImplementsBaseElement
     public static void handleItemInsertion(Level level, BlockEntity container, Direction direction, ObjectArrayList<ItemStack> items) {
         container.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).ifPresent(iItemHandler -> {
             for (ItemStack item : items) {
