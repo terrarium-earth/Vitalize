@@ -60,6 +60,8 @@ public class VitalizeBlocks {
         return tempBlock;
     }
 
+    public static void init() {}
+
     public static void register() {
         BLOCKS.initialize();
         BLOCK_ENTITIES.initialize();

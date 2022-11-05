@@ -1,13 +1,13 @@
 package earth.terrarium.vitalize.blocks;
 
-import earth.terrarium.botarium.api.energy.BlockEnergyContainer;
-import earth.terrarium.botarium.api.energy.EnergyContainer;
-import earth.terrarium.botarium.api.energy.EnergyHoldable;
+import earth.terrarium.botarium.api.energy.EnergyBlock;
+import earth.terrarium.botarium.api.energy.InsertOnlyEnergyContainer;
 import earth.terrarium.botarium.api.menu.ExtraDataMenuProvider;
 import earth.terrarium.vitalize.api.*;
 import earth.terrarium.vitalize.registry.VitalizeBlocks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.codexadrian.spirit.data.Tier;
+import me.codexadrian.spirit.entity.EntityRarity;
 import me.codexadrian.spirit.utils.SoulUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -53,18 +53,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyHoldable, WorldlyContainer, IAnimatable, ContainerData, ExtraDataMenuProvider {
-    private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
-    private final List<BasePylonBlock> pylons = new ArrayList<>();
-    private BlockEnergyContainer energyContainer;
-    private int maxTickTime;
-    private int tickTime;
-    private int maxEnergy;
+public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyBlock, WorldlyContainer, IAnimatable, ContainerData, ExtraDataMenuProvider {
     public static final int TICK_TIME = 0;
     public static final int MAX_TICK_TIME = 1;
     public static final int ENERGY = 2;
     public static final int MAX_ENERGY = 3;
     public static final int ENERGY_CONSUMPTION = 4;
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+    private final List<BasePylonBlock> pylons = new ArrayList<>();
+    private InsertOnlyEnergyContainer energyContainer;
+    private int maxTickTime;
+    private int tickTime;
+    private int maxEnergy;
 
     private final AnimationFactory factory = new AnimationFactory(this);
 
@@ -288,7 +288,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyHol
         if (this.getLevel() != null) {
             Tier tier = SoulUtils.getTier(getCrystal(), this.getLevel());
             if (tier != null) {
-                return tier.minSpawnDelay() + tier.maxSpawnDelay();
+                return 2 * (tier.minSpawnDelay() + tier.maxSpawnDelay());
             }
         }
         return 0;
@@ -382,7 +382,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyHol
             case TICK_TIME -> this.tickTime;
             case MAX_TICK_TIME -> this.maxTickTime;
             case ENERGY -> (int) this.getEnergyStorage().getStoredEnergy();
-            case MAX_ENERGY -> this.maxEnergy;
+            case MAX_ENERGY -> (int) this.getEnergyStorage().getMaxCapacity();
             case ENERGY_CONSUMPTION -> this.getEnergyCost();
             default -> 0;
         };
@@ -415,10 +415,15 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyHol
     }
 
     @Override
-    public EnergyContainer getEnergyStorage() {
+    public InsertOnlyEnergyContainer getEnergyStorage() {
         if(energyContainer == null) {
-            this.energyContainer = new BlockEnergyContainer(this, 1000000);
+            this.energyContainer = new InsertOnlyEnergyContainer(this, 1000000);
         }
         return energyContainer;
+    }
+
+    @Override
+    public void update() {
+        this.setChanged();
     }
 }

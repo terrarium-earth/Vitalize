@@ -39,4 +39,8 @@ public class VitalizeRecipes {
         RECIPES.initialize();
         RECIPE_SERIALIZERS.initialize();
     }
+
+    public static void init() {
+
+    }
 }

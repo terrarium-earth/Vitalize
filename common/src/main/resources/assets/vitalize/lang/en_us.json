@@ -34,10 +34,5 @@
   "gui.vitalize.missing_pylons": "§4⚠§r Missing Pylons",
   "gui.vitalize.missing_inventory": "§4⚠§r Missing Storage",
   "gui.vitalize.missing_energy": "§4⚠§r Needs Energy ",
-  "gui.vitalize.rarity": "★ %s",
-  "rarity.vitalize.common": "Common",
-  "rarity.vitalize.uncommon": "Uncommon",
-  "rarity.vitalize.rare": "Rare",
-  "rarity.vitalize.epic": "Epic",
-  "rarity.vitalize.legendary": "Legendary"
+  "gui.vitalize.rarity": "★ %s"
 }

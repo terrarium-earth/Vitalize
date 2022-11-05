@@ -13,12 +13,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.msrandom.extensions.annotations.ClassExtension;
 import net.msrandom.extensions.annotations.ImplementsBaseElement;
+import net.msrandom.extensions.annotations.NonExtensionElement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @SuppressWarnings("UnstableApiUsage")
 @ClassExtension(SoulRevitalizerBlockEntity.class)
 public class SoulVitalizerExtensions {
+
+    @NonExtensionElement
+    public SoulVitalizerExtensions() {
+    }
 
     @ImplementsBaseElement
     public static void handleItemInsertion(Level level, BlockEntity blockEntity, Direction direction, ObjectArrayList<ItemStack> items) {

@@ -35,7 +35,7 @@ dependencies {
     modImplementation("me.codexadrian.spirit:spirit-forge-1.19.2:${rootProject.spirit_version}") {transitive = false}
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:${rootProject.rei_version}"
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
-    modImplementation('software.bernie.geckolib:geckolib-forge-1.19:3.1.16')
+    modImplementation("software.bernie.geckolib:geckolib-forge-1.19:${rootProject.geckolib_forge}")
     compileOnly(project(path: ":common")) { transitive false }
     //shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
     //modImplementation "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"

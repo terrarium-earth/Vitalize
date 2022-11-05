@@ -13,8 +13,8 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 public class VitalizeFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        //BlockEntityRendererRegistry.register(VitalizeBlocks.PYLON_ENTITY.get(), (rendererDispatcherIn) -> new PylonRenderer());
-        //BlockEntityRendererRegistry.register(VitalizeBlocks.SOUL_REVITALIZER_ENTITY.get(), (rendererDispatcherIn) -> new SoulVitalizerRenderer());
+        BlockEntityRendererRegistry.register(VitalizeBlocks.PYLON_ENTITY.get(), (rendererDispatcherIn) -> new PylonRenderer());
+        BlockEntityRendererRegistry.register(VitalizeBlocks.SOUL_REVITALIZER_ENTITY.get(), (rendererDispatcherIn) -> new SoulVitalizerRenderer());
         GeoItemRenderer.registerItemRenderer(VitalizeBlocks.SOUL_REVITALIZER.get().asItem(), new SoulTranslatorItemRenderer());
         GeoItemRenderer.registerItemRenderer(VitalizeBlocks.PYLON_BLOCK.get().asItem(), new PylonItemRenderer());
         GeoItemRenderer.registerItemRenderer(VitalizeBlocks.PYLON_BLOCK_BEHEADING.get().asItem(), new PylonItemRenderer());

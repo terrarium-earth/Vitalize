@@ -6,5 +6,6 @@ import net.minecraftforge.fml.common.Mod;
 public class VitalizeForge {
     public VitalizeForge() {
         Vitalize.init();
+        Vitalize.register();
     }
 }

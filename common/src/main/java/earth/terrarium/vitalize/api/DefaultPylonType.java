@@ -2,10 +2,10 @@ package earth.terrarium.vitalize.api;
 
 import earth.terrarium.vitalize.Vitalize;
 import earth.terrarium.vitalize.blocks.SoulRevitalizerBlockEntity;
-import earth.terrarium.vitalize.item.ExperienceItem;
 import earth.terrarium.vitalize.recipes.BeheadingData;
 import earth.terrarium.vitalize.registry.VitalizeItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import me.codexadrian.spirit.entity.EntityRarity;
 import me.codexadrian.spirit.utils.SoulUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

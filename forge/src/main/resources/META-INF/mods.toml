@@ -67,6 +67,6 @@ side = "BOTH"
 [[dependencies.vitalize]]
 modId = "spirit"
 mandatory = true
-versionRange = "[2.1.12,)"
+versionRange = "[2.2.0,)"
 ordering = "NONE"
 side = "BOTH"

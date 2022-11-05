@@ -19,4 +19,7 @@ public class VitalizeMenus {
     public static void register() {
         MENUS.initialize();
     }
+
+    public static void init() {
+    }
 }

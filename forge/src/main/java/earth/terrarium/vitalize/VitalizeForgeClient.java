@@ -20,7 +20,7 @@ public class VitalizeForgeClient {
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-        //event.registerBlockEntityRenderer(VitalizeBlocks.SOUL_REVITALIZER_ENTITY.get(), SoulRevitalizerRenderer::new);
-        //event.registerBlockEntityRenderer(VitalizeBlocks.PYLON_ENTITY.get(), PylonRenderer::new);
+        event.registerBlockEntityRenderer(VitalizeBlocks.SOUL_REVITALIZER_ENTITY.get(), SoulRevitalizerRenderer::new);
+        event.registerBlockEntityRenderer(VitalizeBlocks.PYLON_ENTITY.get(), PylonRenderer::new);
     }
 }
