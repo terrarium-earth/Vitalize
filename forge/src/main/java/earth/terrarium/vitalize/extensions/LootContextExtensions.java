@@ -20,6 +20,7 @@ public class LootContextExtensions extends LootContext {
 
     private int lootingAmount;
 
+    @NonExtensionElement
     protected LootContextExtensions(RandomSource arg, float f, ServerLevel arg2, Function<ResourceLocation, LootTable> function, Function<ResourceLocation, LootItemCondition> function2, Map<LootContextParam<?>, Object> map, Map<ResourceLocation, DynamicDrop> map2) {
         super(arg, f, arg2, function, function2, map, map2);
     }

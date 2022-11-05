@@ -12,7 +12,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.msrandom.extensions.annotations.ClassExtension;
 import net.msrandom.extensions.annotations.ImplementsBaseElement;
 import net.msrandom.extensions.annotations.NonExtensionElement;
-import org.openjdk.nashorn.internal.ir.annotations.Ignore;
 
 @ClassExtension(SoulRevitalizerBlockEntity.class)
 public abstract class CoreBlockEntityExtensions {

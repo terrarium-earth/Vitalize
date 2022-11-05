@@ -6,6 +6,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.msrandom.extensions.annotations.ClassExtension;
+import net.msrandom.extensions.annotations.NonExtensionElement;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.function.Consumer;
@@ -13,6 +14,7 @@ import java.util.function.Consumer;
 @ClassExtension(PylonItem.class)
 public class PylonItemExtensions extends BlockItem {
 
+    @NonExtensionElement
     public PylonItemExtensions(Block arg, Properties arg2) {
         super(arg, arg2);
     }

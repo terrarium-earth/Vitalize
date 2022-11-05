@@ -47,12 +47,14 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@ParametersAreNonnullByDefault
 public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyBlock, WorldlyContainer, IAnimatable, ContainerData, ExtraDataMenuProvider {
     public static final int TICK_TIME = 0;
     public static final int MAX_TICK_TIME = 1;
@@ -84,7 +86,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyBlo
     }
 
     @Override
-    public void load(CompoundTag compoundTag) {
+    public void load(@NotNull CompoundTag compoundTag) {
         super.load(compoundTag);
         this.tickTime = compoundTag.getInt("BurnTime");
         this.maxTickTime = compoundTag.getInt("MaxBurnTime");
@@ -92,7 +94,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyBlo
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
+    protected void saveAdditional(@NotNull CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
         compoundTag.putInt("BurnTime", tickTime);
         compoundTag.putInt("MaxBurnTime", maxTickTime);
