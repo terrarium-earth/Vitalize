@@ -1,3 +1,11 @@
+import groovy.json.JsonOutput
+
+buildscript {
+    dependencies {
+        classpath "org.apache.groovy:groovy-json:4.0.6"
+    }
+}
+
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.0-SNAPSHOT" apply false
@@ -100,6 +108,11 @@ subprojects {
                 if (modLoader == "fabric") {
                     dependencies {
                         required.project "fabric-api"
+                        required.project "resourceful-lib"
+                    }
+                } else {
+                    dependencies {
+                        required.project "resourceful-lib"
                     }
                 }
             }
@@ -120,8 +133,12 @@ subprojects {
                     if (modLoader == "fabric") {
                         relations {
                             requiredDependency "fabric-api"
+                            requiredDependency "resourceful-lib"
                         }
-                    }
+                    } else {
+                        relations {
+                            requiredDependency "resourceful-lib"
+                        }
                 }
             }
         }

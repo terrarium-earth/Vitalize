@@ -70,3 +70,10 @@ mandatory = true
 versionRange = "[2.2.0,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.vitalize]]
+modId = "resourcefullib"
+mandatory = true
+versionRange = "[1.1.15,)"
+ordering = "NONE"
+side = "BOTH"
