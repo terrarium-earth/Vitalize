@@ -36,7 +36,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,7 +69,7 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyBlo
 
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    private static final List<BlockPos> PYLON_POSITIONS = Util.make(Lists.newArrayList(), positions -> {
+    private static final List<BlockPos> PYLON_POSITIONS = Util.make(new ArrayList<>(), positions -> {
         positions.add(new BlockPos(-3, 0, 3));
         positions.add(new BlockPos(-3, 0, -3));
         positions.add(new BlockPos(3, 0, -3));
