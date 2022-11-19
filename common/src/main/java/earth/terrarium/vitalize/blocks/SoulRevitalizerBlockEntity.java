@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.codexadrian.spirit.data.Tier;
 import me.codexadrian.spirit.entity.EntityRarity;
 import me.codexadrian.spirit.utils.SoulUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -36,7 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.compress.utils.Lists;
+import net.msrandom.extensions.annotations.ImplementedByExtension;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,16 +69,16 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyBlo
 
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    private static final List<BlockPos> PYLON_POSITIONS = Util.make(Lists.newArrayList(), positions -> {
-        positions.add(new BlockPos(-3, 0, 3));
-        positions.add(new BlockPos(-3, 0, -3));
-        positions.add(new BlockPos(3, 0, -3));
-        positions.add(new BlockPos(3, 0, 3));
-        positions.add(new BlockPos(4, 0, 0));
-        positions.add(new BlockPos(-4, 0, 0));
-        positions.add(new BlockPos(0, 0, 4));
-        positions.add(new BlockPos(0, 0, -4));
-    });
+    private static final List<BlockPos> PYLON_POSITIONS = List.of(
+        new BlockPos(-3, 0, 3),
+        new BlockPos(-3, 0, -3),
+        new BlockPos(3, 0, -3),
+        new BlockPos(3, 0, 3),
+        new BlockPos(4, 0, 0),
+        new BlockPos(-4, 0, 0),
+        new BlockPos(0, 0, 4),
+        new BlockPos(0, 0, -4)
+    );
 
     public SoulRevitalizerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(VitalizeBlocks.SOUL_REVITALIZER_ENTITY.get(), blockPos, blockState);
@@ -216,15 +215,18 @@ public class SoulRevitalizerBlockEntity extends BlockEntity implements EnergyBlo
         return null;
     }
 
+    @ImplementedByExtension
     public static boolean isContainer(BlockEntity blockEntity, Direction direction) {
         throw new AssertionError();
     }
 
     @Contract(pure = true)
+    @ImplementedByExtension
     public static boolean hasSpace(BlockEntity blockEntity, Direction direction) {
         throw new AssertionError();
     }
 
+    @ImplementedByExtension
     public static void handleItemInsertion(Level level, BlockEntity containerPos, Direction direction, ObjectArrayList<ItemStack> items) {
         throw new AssertionError();
     }

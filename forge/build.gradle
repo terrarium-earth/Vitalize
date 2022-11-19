@@ -51,7 +51,7 @@ processResources {
 
 jar {
     classifier "dev"
-    archivesBaseName = "$archives_base_name-${project.name}-$minecraft_version"
+    archivesBaseName = "$mod_id-${project.name}-$minecraft_version"
 }
 
 publishing {
